@@ -1,0 +1,439 @@
+{% extends "basic_templates/header.html" %}
+{% load static %}
+{% block css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+  <link rel="stylesheet" href="{% static 'css/basic_css/header.css' %}">
+  <link rel="stylesheet" href="{% static 'css/hospital/hospital.css' %}">
+  <link rel="stylesheet" href="{% static 'css/loginpage/loginpage.css' %}">
+ 
+  <style>
+    .hospital-page {
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+    }
+    
+    .sidebar {
+      width: 25%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .filter-box {
+      background:rgb(217, 237, 240);
+      padding: 15px;
+      border-radius: 10px;
+    }
+    
+    .filter-box select,
+    .top-filters input,
+    .top-filters select {
+      width: 100%;
+      margin-top: 8px;
+      padding: 8px;
+      border-radius: 6px;
+      border: 2px solid hsl(182, 100%, 35%);
+    }
+    
+    .tag-group {
+      margin-top: 10px;
+    }
+    
+    .tag-group span {
+      display: inline-block;
+      background:rgb(255, 255, 255);
+      border-radius: 20px;
+      padding: 4px 10px;
+      margin: 4px 4px 0 0;
+      font-size: 12px;
+      cursor: pointer;
+      border: 2px solid hsl(182, 100%, 35%);
+    }
+    
+    .main-section {
+      width: 75%;
+    }
+    
+    .top-filters {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .hospital-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+    }
+    
+    {% comment %} .card {
+      background: #fff;
+      border: 2px solid  hsl(182, 100%, 35%);
+      border-radius: 10px;
+      overflow: hidden;
+    } {% endcomment %}
+    .card {
+      display: flex;
+      flex-direction: column;
+      border: 2px solid hsl(182, 100%, 35%);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease-in-out;
+      background-color: #fff;
+    }
+    
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;  /* This ensures the button can be pushed to the bottom */
+      flex: 1;  /* Fill remaining height */
+      padding: 14px;
+    }
+    
+    
+    
+    .card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+    
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 10px;
+    }
+    .pagination a {
+      padding: 8px 12px;
+      background: #f0f0f0;
+      text-decoration: none;
+      border: 2px solid hsl(182, 100%, 35%);
+      border-radius: 5px;
+      color: #333;
+    }
+    .pagination a.active {
+      background: hsl(182, 100%, 35%);
+      color: #fff;
+    }
+    
+    .hospital-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
+      gap: 20px;
+      padding: 20px;
+    }
+    
+    .card {
+      background-color: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease-in-out;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+    }
+    
+    .card-body {
+      padding: 14px;
+    }
+    
+    .card-body h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      color: #2c3e50;
+    }
+    
+    .card-body p {
+      margin: 4px 0;
+      font-size: 13px;
+      color: #555;
+    }
+    
+    .badge.open {
+      background-color: #2ecc71;
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 12px;
+      display: inline-block;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+    .hospital-link {
+      text-decoration: none;
+      color: #003366;
+    }
+    
+    .hospital-link:hover {
+      text-decoration: underline;
+      color: hsl(182, 100%, 35%);
+    }
+    
+    
+    
+    
+    .btn:hover {
+      background-color: #2980b9;
+    }
+    @media (max-width: 992px) {
+      .hospital-cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 600px) {
+      .hospital-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    </style>
+  {% endblock css%}
+  
+  {% block body %}
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  
+  <br>
+
+
+  <section class="service" aria-label="service">
+    <div class="container">
+
+<h1>hospital</h1>
+<br>
+<!-- Container Wrapper -->
+<div class="hospital-page">
+    <!-- Left Sidebar -->
+    <aside class="sidebar">
+      <!-- Container 1: Location Filters -->
+      <div class="filter-box">
+        <h3>Location Filters</h3>
+        <select><option>State</option></select>
+        <select><option>District</option></select>
+        <select><option>Place</option></select>
+      </div>
+  
+      <!-- Container 2: Tag-Based Filters -->
+      <div class="filter-box">
+        <h3>Other Filters</h3>
+  
+        <div class="tag-group">
+          <strong>Specializations:</strong>
+          <span>Cardiology</span>
+          <span>Neurology</span>
+          <span>Orthopedics</span>
+        </div>
+  
+        <div class="tag-group">
+          <strong>Features:</strong>
+          <span>24/7 Emergency</span>
+          <span>ICU</span>
+          <span>Pharmacy</span>
+          <span>Diagnostics</span>
+          <span>Ambulance</span>
+          <span>In/Out Patient</span>
+        </div>
+  
+        <div class="tag-group">
+          <strong>Rating:</strong>
+          <span>4+ Stars</span>
+          <span>3+ Stars</span>
+        </div>
+  
+        <div class="tag-group">
+          <strong>Hospital Type:</strong>
+          <span>Private</span>
+          <span>Government</span>
+          <span>Trust</span>
+          <span>Charitable</span>
+        </div>
+  
+        <div class="tag-group">
+          <strong>Insurance:</strong>
+          <span>Accepted</span>
+          <span>Not Accepted</span>
+        </div>
+      </div>
+    </aside>
+  
+    <!-- Right Main Section -->
+    <main class="main-section">
+      <!-- Container 3: Top Filters -->
+      <div class="filter-box">
+      <div class="top-filters">
+          <input type="text" placeholder="Search Hospital Name...">
+          
+          
+        </div>
+        <div class="top-filters">
+            <select>
+                <option>Sort by</option>
+                <option>Name A-Z</option>
+                <option>Nearest</option>
+                <option>Top Rated</option>
+                <option>Most Reviewed</option>
+              </select>
+              <button>Reset</button>
+              <button>Filter</button>
+            </div>
+            </div><br>
+  
+      <!-- Container 4: Hospital Cards -->
+      <div class="hospital-cards" id="hospitalCards">
+        {% for hospital in hospitals %}
+          <div class="card hospital-card">
+            <img src="{{ hospital.photo.url }}" alt="{{ hospital.name }}">
+            <div class="card-body">
+              <h3>
+                <a href="{% url 'hospital_detail' hospital.id %}" class="hospital-link">
+                  <strong>{{ hospital.name }}</strong>
+                </a>
+                
+              </h3>
+              
+              
+              <p>{{ hospital.address }}, {{ hospital.place }}, {{ hospital.district }} - {{ hospital.pincode }}</p>
+              <p><strong>Phone:</strong> {{ hospital.contact_number }}{% if hospital.contact_number2 %}, {{ hospital.contact_number2 }}{% endif %}</p>
+              {% if hospital.email %}
+              <p><strong>Email:</strong> {{ hospital.email }}{% endif %}{% if hospital.email2 %}</p>
+              <p><strong>Email:</strong>  {{ hospital.email2 }}{% endif %}</p>
+              {% if hospital.open_24_hours %}
+                <p class="badge open">Open 24 Hours</p>
+              {% endif %}
+              {% comment %} <p><strong>Rating:</strong> {{ hospital.rating }}</p> {% endcomment %}
+              {% if hospital.website %}
+                <a href="{{ hospital.website }}" target="_blank" class="btn">Visit Website</a>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      
+      
+    
+  
+      <!-- Pagination -->
+      <div class="pagination" id="pagination">
+        <a href="#">1</a>
+        <a href="#">2</a>
+        <a href="#">3</a>
+        <a href="#">4</a>
+        <a href="#">5</a>
+        <span>...</span>
+        <a href="#">10</a>
+      </div>
+    </main>
+  </div>
+  
+  
+  
+  
+       
+          
+    </div>
+</section>
+
+
+<script>
+    const items = Array.from({ length: 50 }, (_, i) => `Item ${i + 1}`);
+    const itemsPerPage = 5;
+    let currentPage = 1;
+  
+    function displayItems(page) {
+      const container = document.getElementById('item-container');
+      container.innerHTML = '';
+      const start = (page - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      const paginatedItems = items.slice(start, end);
+  
+      paginatedItems.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.textContent = item;
+        container.appendChild(div);
+      });
+    }
+  
+    function setupPagination() {
+      const pageCount = Math.ceil(items.length / itemsPerPage);
+      const pagination = document.getElementById('pagination');
+      pagination.innerHTML = '';
+  
+      for (let i = 1; i <= pageCount; i++) {
+        const a = document.createElement('a');
+        a.textContent = i;
+        a.href = "#";
+        if (i === currentPage) a.classList.add('active');
+        a.addEventListener('click', function(e) {
+          e.preventDefault();
+          currentPage = i;
+          displayItems(currentPage);
+          setupPagination();
+        });
+        pagination.appendChild(a);
+      }
+    }
+  
+    // Initialize on page load
+    displayItems(currentPage);
+    setupPagination();
+  </script>
+ <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const cards = document.querySelectorAll(".hospital-card");
+    const cardsPerPage = 6;
+    const totalPages = Math.ceil(cards.length / cardsPerPage);
+    const pagination = document.getElementById("pagination");
+
+    function showPage(page) {
+      const start = (page - 1) * cardsPerPage;
+      const end = start + cardsPerPage;
+      cards.forEach((card, index) => {
+        card.style.display = index >= start && index < end ? "block" : "none";
+      });
+
+      // Highlight active page
+      document.querySelectorAll(".pagination a").forEach(a => a.classList.remove("active"));
+      const currentPageLink = document.querySelector(`.pagination a[data-page="${page}"]`);
+      if (currentPageLink) currentPageLink.classList.add("active");
+    }
+
+    function createPagination() {
+      pagination.innerHTML = ""; // clear
+      for (let i = 1; i <= totalPages; i++) {
+        const pageLink = document.createElement("a");
+        pageLink.href = "#";
+        pageLink.textContent = i;
+        pageLink.setAttribute("data-page", i);
+        pageLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          showPage(i);
+        });
+        pagination.appendChild(pageLink);
+      }
+    }
+
+    createPagination();
+    showPage(1); // Show first page by default
+  });
+</script>
+
+{% endblock body %}

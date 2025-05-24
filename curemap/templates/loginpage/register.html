@@ -1,0 +1,141 @@
+
+{% extends "basic_templates/header.html" %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/basic_css/header.css' %}">
+<link rel="stylesheet" href="{% static 'css/loginpage/loginpage.css' %}">
+<style>
+    .login-container {
+        max-width: 1000px;
+        margin: 100px auto;
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 40px 30px;
+        box-shadow: 0 8px 32px hsl(182, 100%, 35%);
+        color: #000;
+        text-align: center;
+      }
+      
+      .login-container h2 {
+        margin-bottom: 25px;
+        font-size: 28px;
+        font-weight: 600;
+        color: #000;
+      }
+      
+      .login-container input[type="text"],
+      .login-container input[type="email"],
+      .login-container input[type="password"] {
+        width: 100%;
+        padding: 12px 15px;
+        margin: 10px 0;
+        border: 2.5px solid hsl(182, 100%, 35%);
+        border-radius: 8px;
+        background-color: #fff;
+        color: #000;
+        font-size: 15px;
+      }
+      
+      .login-container input::placeholder {
+        color: #000;
+        opacity: 1; /* Ensures full black */
+      }
+      
+      .login-container button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 15px;
+        background: hsl(182, 100%, 35%);
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #fff;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+      
+      .login-container button:hover {
+        background: hsl(186, 100%, 19%);
+      }
+      .register-text {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+        align-items: center;
+      }
+      
+      .register-text a {
+        color:rgb(76, 139, 175);
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+      
+      .register-text a:hover {
+        color:rgb(56, 106, 142);
+        text-decoration: underline;
+      }
+      .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 15px;
+      }
+      
+      .form-group {
+        flex: 1;
+        min-width: 120px;
+      }
+      
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        text-align: left;
+      }
+      
+      
+</style>
+
+{% endblock css%}
+
+{% block body %}
+
+<section class="section hero" style="background-image: url('../../static/img/userpage/home_background.jpg')" aria-label="home">
+    <div class="login-container">
+        <h2>Registration</h2>
+        <form method="POST" action="{% url 'register_user' %}">
+          {% csrf_token %}
+        
+          <div class="form-row">
+            <div class="form-group">{{ form.username.label_tag }}{{ form.username }}</div>
+            <div class="form-group">{{ form.first_name.label_tag }}{{ form.first_name }}</div>
+            <div class="form-group">{{ form.last_name.label_tag }}{{ form.last_name }}</div>
+          </div>
+        
+          <div class="form-row">
+            <div class="form-group">{{ form.email.label_tag }}{{ form.email }}</div>
+          </div>
+        
+          <div class="form-row">
+            <div class="form-group">{{ form.password1.label_tag }}{{ form.password1 }}</div>
+            <div class="form-group">{{ form.password2.label_tag }}{{ form.password2 }}</div>
+          </div>
+        
+          <button type="submit">Register</button>
+        </form>
+        
+        <p class="register-text">You have an account? <a href="{% url 'login_user' %}">Login here</a></p>
+
+      </div>
+      
+    
+    </section>
+
+{% endblock body %}
+

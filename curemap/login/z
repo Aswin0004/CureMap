@@ -1,0 +1,19 @@
+i register user profile data twise then it see IntegrityError at /user_profile/
+UNIQUE constraint failed: user_userprofile.user_id
+Request Method:	POST
+Request URL:	http://127.0.0.1:8000/user_profile/
+Django Version:	5.2.1
+Exception Type:	IntegrityError
+Exception Value:	
+UNIQUE constraint failed: user_userprofile.user_id
+Exception Location:	/Users/aswin/Documents/curemap/curemap-env/lib/python3.14/site-packages/django/db/backends/sqlite3/base.py, line 360, in execute
+Raised during:	user.views.user_profile
+Python Executable:	/Users/aswin/Documents/curemap/curemap-env/bin/python
+Python Version:	3.14.0
+Python Path:	
+['/Users/aswin/Documents/cure_map/curemap',
+ '/Library/Frameworks/Python.framework/Versions/3.14/lib/python314.zip',
+ '/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14',
+ '/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/lib-dynload',
+ '/Users/aswin/Documents/curemap/curemap-env/lib/python3.14/site-packages']
+Server time:	Sun, 18 May 2025 09:16:43 +0000 i need not allow to regiter the data twise 

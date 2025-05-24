@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Family Member</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+        form {
+            max-width: 500px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: #28a745;
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #custom-rel {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Add Family Member</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" required>
+
+        <label for="relationship-select">Relationship:</label>
+        <select name="relationship" id="relationship-select" required>
+            <option value="">--Select--</option>
+            <option value="Father">Father</option>
+            <option value="Mother">Mother</option>
+            <option value="Brother">Brother</option>
+            <option value="Sister">Sister</option>
+            <option value="Spouse">Spouse</option>
+            <option value="Son">Son</option>
+            <option value="Daughter">Daughter</option>
+            <option value="Grandfather">Grandfather</option>
+            <option value="Grandmother">Grandmother</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <div id="custom-rel" style="display: none;">
+            <label for="custom_relationship">Specify Relationship:</label>
+            <input type="text" name="custom_relationship" id="custom_relationship" placeholder="Enter custom relationship">
+        </div>
+
+        <label for="photo">Photo:</label>
+        <input type="file" name="photo" id="photo">
+
+        <button type="submit">Add Family Member</button>
+    </form>
+
+    <script>
+        const relationshipSelect = document.getElementById("relationship-select");
+        const customRelDiv = document.getElementById("custom-rel");
+
+        function toggleCustomField() {
+            if (relationshipSelect.value === "Other") {
+                customRelDiv.style.display = "block";
+            } else {
+                customRelDiv.style.display = "none";
+            }
+        }
+
+        relationshipSelect.addEventListener("change", toggleCustomField);
+        window.onload = toggleCustomField;
+    </script>
+
+</body>
+</html>

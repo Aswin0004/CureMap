@@ -1,0 +1,196 @@
+
+{% extends "basic_templates/hospitalheader.html" %}
+{% load static %}
+
+{% block css %}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+
+<link rel="stylesheet" href="{% static 'css/basic_css/header.css' %}">
+
+<script src="{% static 'js/basic/locationData.js' %}"></script>
+{% endblock css %}
+
+{% block body %}
+<style>
+  .main-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+
+  .left-container, .right-container {
+    background-color: white;
+    border: 2px solid #007BFF;
+    border-radius: 8px;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .left-container {
+    flex: 1;
+    min-width: 250px;
+  }
+
+  .right-container {
+    flex: 3;
+    min-width: 500px;
+  }
+
+  .hospital-photo {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
+
+  .hospital-info p {
+    margin: 8px 0;
+  }
+
+  .badge.open {
+    display: inline-block;
+    padding: 6px 10px;
+    background-color: green;
+    color: white;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+
+  .map-container {
+    margin-top: 15px;
+  }
+
+  iframe {
+    width: 100%;
+    height: 250px;
+    border: none;
+    border-radius: 8px;
+  }
+
+  @media (max-width: 768px) {
+    .main-section {
+      flex-direction: column;
+    }
+  }
+
+  {% comment %} gallery section {% endcomment %}
+
+  .hospital-gallery-section {
+    background-color: #f9f9f9;
+    padding: 40px 20px;
+    border-top: 2px solidrgb(255, 255, 255);
+  }
+  
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+  }
+  
+  .gallery-item {
+    background: white;
+    border: 1px solid #007bff;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  .gallery-item img {
+    max-width: 100%;
+    border-radius: 6px;
+    height: 180px;
+    object-fit: cover;
+  }
+  
+  .caption {
+    font-size: 14px;
+    margin-top: 8px;
+    color: #333;
+  }
+  
+</style>
+
+<section class="section listing" aria-labelledby="listing-label">
+  <div class="container">
+    <div class="main-section">
+
+      <!-- LEFT CONTAINER: Photo and Info (Now on Left) -->
+      <div class="left-container">
+        <h1>{{ hospital.name }}</h1>
+        <img src="{{ hospital.photo.url }}" alt="{{ hospital.name }}" class="hospital-photo">
+
+        <div class="hospital-info">
+          <p><strong>Address:</strong> {{ hospital.address }}, {{ hospital.place }}, {{ hospital.district }} - {{ hospital.pincode }}</p>
+          <p><strong>Phone:</strong> {{ hospital.contact_number }}{% if hospital.contact_number2 %}, {{ hospital.contact_number2 }}{% endif %}</p>
+          {% if hospital.email %}
+            <p><strong>Email:</strong> {{ hospital.email }}</p>
+          {% endif %}
+          {% if hospital.email2 %}
+            <p><strong>Alternate Email:</strong> {{ hospital.email2 }}</p>
+          {% endif %}
+          {% if hospital.website %}
+            <p><strong>Website:</strong> <a href="{{ hospital.website }}" target="_blank">{{ hospital.website }}</a></p>
+          {% endif %}
+          {% if hospital.open_24_hours %}
+            <p class="badge open">Open 24 Hours</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- RIGHT CONTAINER: About and Map (Now on Right) -->
+      <div class="right-container">
+        <h2>About</h2>
+        <p>{{ hospital.description|default:"No description available." }}</p>
+
+        <ul>
+          <li>Highly experienced doctors</li>
+          <li>Advanced medical equipment</li>
+          <li>Patient-centered care</li>
+        </ul>
+
+        <div class="map-container">
+          <h3>Location</h3>
+          <iframe 
+          src="{{ hospital.location_map_url }}" 
+          width="100%" 
+          height="250" 
+          style="border:0; border-radius: 8px;"
+          allowfullscreen 
+          loading="lazy" 
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% comment %} gallery-section {% endcomment %}
+
+<section class="hospital-gallery-section">
+    <div class="container">
+      <h2 style="text-align: center; margin-bottom: 20px;">Gallery</h2>
+      <div class="gallery-grid">
+        {% for img in hospital.album.all %}
+          <div class="gallery-item">
+            <img src="{{ img.image.url }}" alt="Hospital Image" loading="lazy" />
+          </div>
+        {% empty %}
+          <p style="text-align: center;">No images available.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  
+  
+  
+  
+{% endblock body %}

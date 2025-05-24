@@ -1,0 +1,1002 @@
+
+{% extends "basic_templates/header.html" %}
+{% load static %}
+
+{% block css %}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+<!-- Include Cropper.js CSS and JS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+<link rel="stylesheet" href="{% static 'css/basic_css/header.css' %}">
+<link rel="stylesheet" href="{% static 'css/userpage/profile.css' %}">
+
+<script src="{% static 'js/basic/locationData.js' %}"></script>
+{% endblock css %}
+
+{% block body %}<br>
+<style>
+    .grid-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      list-style: none;
+      padding: 0;
+    }
+  
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+  
+    .medi-locker-btn {
+        padding: 10px 20px;
+        background-color: hsl(182, 100%, 35%);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .medi-locker-btn:hover {
+        background: hsl(186, 100%, 19%);
+      }
+  
+    .profile-layout {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+  
+    .left-sidebar {
+      flex: 1;
+      min-width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+  
+    .profile-card,
+    .family-card,
+    .card {
+      background-color: #f9f9f9;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px hsl(182, 100%, 35%);;
+    }
+      
+      .profile-pic {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 0 auto 10px auto; /* Center image and add spacing */
+        display: block;
+      }
+      
+      .user-name {
+        font-size: 1.6rem; /* Bigger size */
+        font-weight: 800;  /* Darker font */
+        color: #222;       /* Darker text color */
+        margin-bottom: 0.5rem;
+        text-align: center; /* Centers all child elements */
+      }
+      
+    .button-group {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+  
+    .button-group button {
+        padding: 10px;
+        background-color: hsl(182, 100%, 35%);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .button-group button:hover {
+        background: hsl(186, 100%, 19%);
+      }
+  
+    .family-card h4 {
+      margin-bottom: 0.75rem;
+    }
+  
+    .family-photos {
+        display: flex;
+        flex-wrap: wrap;         /* Enables wrapping to next line */
+        gap: 10px;
+        max-width: 100%;         /* Ensure container doesn’t overflow */
+        overflow: hidden;        /* Optional: hides anything that still overflows */
+      }
+      .family-pic {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid hsl(182, 100%, 35%); /* Blue border, adjust color as needed */
+      }
+      .family-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+      }
+      
+      .add-btn {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+        background-color:hsl(182, 100%, 35%);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      
+      .add-btn:hover {
+        background-color: hsl(186, 100%, 19%);
+      }
+      
+      
+  
+    .right-content {
+      flex: 2;
+      min-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+  
+    .two-cards-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+  
+    .two-cards-row .card {
+      flex: 1;
+      min-width: 240px;
+    }
+  
+    .large-box {
+      background:rgb(217, 237, 240);
+    }
+  
+    .profile-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 10px;
+    }
+  
+    .profile-nav a {
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+      padding: 6px 12px;
+      background: #fff;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: background 0.3s;
+    }
+  
+    .profile-nav a:hover {
+      background-color: #e0e0e0;
+    }
+  
+    @media (max-width: 768px) {
+      .profile-layout {
+        flex-direction: column;
+      }
+  
+      .two-cards-row {
+        flex-direction: column;
+      }
+    }
+
+    .tab-container {
+        position: relative;
+        padding-top: 40px;
+      }
+      
+      .profile-nav {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        z-index: 2;
+        margin-bottom: 20px; 
+      }
+      
+      .tab-link {
+        background: white;
+        padding: 10px 15px;
+        font-weight: bold;
+        color: #333;
+        text-decoration: none;
+        position: relative;
+        transition: transform 0.3s;
+      }
+      
+      .tab-link.active {
+        transform: translateY(20px); /* move it below the line */
+        background: white;
+        z-index: 3;
+      }
+      
+      .broken-line {
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        height: 3px;
+        width: 100%;
+        background: #0077cc;
+        z-index: 1;
+        transition: 0.3s ease-in-out;
+        clip-path: inset(0 0 0 0); /* Default to no clipping */
+      }
+      
+      .broken-line::before,
+      .broken-line::after {
+        content: '';
+        position: absolute;
+        height: 3px;
+        background: white; /* Line color for the "cut" effect */
+        transition: all 0.3s ease;
+        z-index: 2;
+      }
+      
+      
+      /* Tab Links */
+
+
+.tab-content {
+  display: none;
+  margin-top: 20px;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Timeline Styles */
+.timeline-zigzag {
+  position: relative;
+  max-width: 800px;
+  margin: 1px auto;
+  padding: 20px 0;
+}
+
+.timeline-zigzag::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background-color: #ccc;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.timeline-item {
+  padding: 20px 40px;
+  position: relative;
+  width: 50%;
+}
+
+.timeline-item.left {
+  left: 0;
+  text-align: right;
+}
+
+.timeline-item.right {
+  left: 50%;
+  text-align: left;
+}
+
+.timeline-item .content {
+  background: linear-gradient(135deg, #f0f0f0, #e6e6e6);
+  padding: 15px 20px;
+  border-radius: 20px;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: inline-block;
+}
+
+.timeline-item.left .content::after,
+.timeline-item.right .content::after {
+  content: '';
+  position: absolute;
+  top: 20px;
+  width: 15px;
+  height: 15px;
+  background-color: #fff;
+  border: 4px solid #4CAF50;
+  border-radius: 50%;
+  z-index: 3;
+}
+
+.timeline-item.left .content::after {
+  right: -50px;
+}
+
+.timeline-item.right .content::after {
+  left: -50px;
+}
+
+.step-title {
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #4CAF50;
+  margin-bottom: 8px;
+}
+
+  
+
+/* Message Section Styles */
+#message-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#message-input {
+  padding: 10px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  padding: 10px;
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #005f99;
+}
+
+#message-output {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+  </style>
+  <style>
+    
+
+      
+      .large-box h2 {
+        margin-bottom: 25px;
+        font-size: 28px;
+        font-weight: 600;
+        color: #000;
+      }
+      
+      .large-box input[type="email"],
+      .large-box input[type="text"],
+      .large-box input[type="date"],
+      .large-box input[type="radio"],
+      .large-box input[type="password"] {
+        width: 100%;
+        padding: 12px 15px;
+        margin: 10px 0;
+        border: 2.5px solid hsl(182, 100%, 35%);
+        border-radius: 8px;
+        background-color: #fff;
+        color: #000;
+        font-size: 15px;
+      }
+      
+      .large-box input::placeholder {
+        color: #000;
+        opacity: 1; /* Ensures full black */
+      }
+      
+      .large-box button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 15px;
+        background: hsl(182, 100%, 35%);
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #fff;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+      
+      .large-box button:hover {
+        background: hsl(186, 100%, 19%);;
+      }
+      .register-text {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+        align-items: center;
+      }
+      
+      .register-text a {
+        color:rgb(76, 139, 175);
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+      
+      .register-text a:hover {
+        color:rgb(56, 106, 142);
+        text-decoration: underline;
+      }
+      #previewImage {
+        max-width: 100%;
+        max-height: 200px;
+        display: none;
+        margin: 10px auto;
+        border-radius: 10px;
+      }
+      .large-box input[type="file"] {
+        margin: 10px 0;
+        width: 100%;
+        padding: 10px;
+        font-size: 15px;
+        border: 1px solid #000;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        cursor: pointer;
+      }
+      
+      .large-box select {
+        width: 100%;
+        padding: 12px 15px;
+        margin: 10px 0;
+        border: 1px solid #000;
+        border-radius: 8px;
+        background-color: #fff;
+        color: #000;
+        font-size: 15px;
+      }
+      
+      .large-box select:focus,
+      .large-box input[type="file"]:focus {
+        outline: none;
+        border-color: hsl(182, 100%, 35%);
+        box-shadow: 0 0 5px hsl(186, 100%, 19%);;
+      }
+      
+      
+      .family-members-wrapper {
+        text-align: left;
+        margin-top: 15px;
+      }
+      
+      .family-members-wrapper label {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 8px;
+        color: #333;
+      }
+      
+      .tag-options-inline {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+      }
+      
+      .tag {
+        background-color: #eee;
+        padding: 6px 12px;
+
+        border: 2.5px solid hsl(182, 100%, 35%);
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      
+      .tag.active {
+        background-color: #007bff;
+        color: white;
+      }
+      
+      
+      .tag.selected {
+        background:hsl(182, 100%, 35%);;
+        color: #fff;
+      }
+      
+      #customFamilyInput {
+        width: 100%;
+        padding: 12px 15px;
+        margin-top: 10px;
+        border: 2.5px solid hsl(182, 100%, 35%);
+        border-radius: 8px;
+        background-color: #fff;
+        color: #000;
+        font-size: 15px;
+      }
+      
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+      
+      .large-box select {
+        width: 100%;
+        padding: 12px 15px;
+        margin: 10px 0;
+        border: 2.5px solid hsl(182, 100%, 35%);
+        border-radius: 8px;
+        background-color: #fff;
+        color: #000;
+        font-size: 15px;
+      }
+      
+      .large-box select:focus {
+        outline: none;
+        border-color: hsl(182, 100%, 35%);
+        box-shadow: 0 0 5px hsl(186, 100%, 19%);
+      }
+
+      .form-grid.two-column {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        
+      }
+      
+</style>
+  
+<section class="section listing" aria-labelledby="listing-label">
+    <div class="container">
+  
+      <!-- Heading + Button -->
+      <div class="header-row">
+        <h2 class="headline-md" data-reveal="left">User Profile</h2>
+        <button class="medi-locker-btn">Medi Locker</button>
+      </div>
+  
+      <div class="profile-layout">
+  
+        <!-- Left Sidebar -->
+        <div class="left-sidebar">
+  
+          <!-- Profile Card -->
+          <div class="profile-card">
+            
+            {% if request.user.userprofile.photo %}
+  <img src="{{ request.user.userprofile.photo.url }}" alt="Profile" class="profile-pic">
+{% else %}
+  <img src="{% static 'img/person/profile .png' %}" alt="Default Profile" class="profile-pic">
+{% endif %}
+
+    <h3 class="user-name">{{ request.user.first_name }} {{ request.user.userprofile.middle_name }} {{ request.user.last_name }}</h3>
+
+            <hr>
+            <p>Gender: {{ request.user.userprofile.gender }}</p>
+            <p>Age: {{ age }} </p>
+            <p>Blood Group: {{ request.user.userprofile.blood_group }}</p>
+            <div class="button-group">
+              <button>View Medical Files</button>
+              <button><a href="{% url 'edit_user_profile' %}">More Information</a></button>
+            </div>
+          </div>
+  
+          <!-- Family Members Card -->
+          <div class="family-card">
+            <div class="family-card-header">
+              <h4 class="family-heading">Family Members</h4>
+              <button class="add-btn"><a href="{% url 'add_family_member' %}">+ Add</a></button>
+            </div>
+            <div class="family-photos">
+              <img src="{% static 'img/person/t1.jpg' %}" class="family-pic" alt="Member 1">
+              <img src="{% static 'img/person/t3.jpg' %}" class="family-pic" alt="Member 2">
+              <img src="{% static 'img/person/team-3.jpg' %}" class="family-pic" alt="Member 3">
+              <img src="{% static 'img/person/team-2.jpg' %}" class="family-pic" alt="Member 4">
+              <img src="{% static 'img/person/a.jpg' %}" class="family-pic" alt="Member 5">
+              <img src="{% static 'img/person/t2.jpg' %}" class="family-pic" alt="Member 6">
+            </div>
+          </div>
+          
+        </div>
+  
+        <!-- Right Content -->
+        <div class="right-content">
+  
+          <!-- Row with 2 equal cards -->
+          <div class="two-cards-row">
+            <div class="card box">Card 3 Content</div>
+            <div class="card box">Card 4 Content</div>
+          </div>
+          {% if not has_profile %}
+          <!-- Full Width Card -->
+          <div class="card large-box">
+            <h2>Register User Details</h2>
+            <form id="profileForm" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              
+              {% comment %} <div class="form-grid two-column">
+                <input type="email" name="email" required placeholder="Email" >
+                <input type="password" name="password" required placeholder="Password">
+              </div> {% endcomment %}
+              
+              <div class="form-grid">
+                <input type="text" name="first_name" required placeholder="First Name" value="{{ request.user.first_name }} "> 
+                <input type="text" name="middle_name" placeholder="Middle_name">
+                <input type="text" name="last_name" placeholder="Last Name" value="{{ request.user.last_name }}">
+                <input type="email" name="email" required placeholder="Email" value="{{ request.user.email }}">
+                <input type="date" name="dob" required placeholder="Date of Birth" >
+                <input type="text" name="phone_number" required placeholder="Phone Number">
+            
+                <select name="blood_group">
+                  <option value="">Select Blood Group</option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                </select>
+                <select name="gender" required>
+                  <option value="">Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+            
+                <input type="text" name="pincode" required placeholder="Pincode">
+                <!-- State Dropdown -->
+    <select id="state" name="state" class="form-control" required onchange="populateDistricts('state', 'district')">
+      <option value="">Select State</option>
+    </select>
+    
+    
+    <!-- District Dropdown -->
+    <select id="district" name="district" class="form-control" required>
+      <option value="">Select District</option>
+    </select>
+    
+                <input type="text" name="place" required placeholder="Place">
+                <input type="text" name="street" required placeholder="street">
+                <input type="text" name="house_name" required placeholder="House Name">
+                <input type="file" id="profilePicInput" accept="image/png, image/jpeg, image/jpg" required>
+
+                
+              </div>
+              <!-- Family Members Section -->
+              <div class="family-members-wrapper">
+                <label>Select Family Members</label>
+                <div class="tag-options-inline">
+                  <span class="tag" data-value="1">1</span>
+                  <span class="tag" data-value="2">2</span>
+                  <span class="tag" data-value="3">3</span>
+                  <span class="tag" data-value="4">4</span>
+                  <span class="tag" data-value="5">5</span>
+                  <span class="tag custom-tag" data-value="custom">Custom</span>
+                  
+                  <!-- Custom input shown inline -->
+                  <input type="number" name="family_member_count" id="customFamilyInput" min="1" placeholder="Enter custom number" style="display: none; width: 33%; margin-left: 10px 0;" />
+                  <input type="hidden" name="selected_family_members" id="selectedFamilyValue">
+                </div>
+                
+
+                <div class="form-grid">
+                  <label for="photo">Upload Photo</label>
+                  <!-- Preview and Crop Area -->
+                  <div id="cropper-container" style="margin-top: 10px;">
+                    <img id="preview" style="max-width: 300px; display:none;">
+                    <canvas id="croppedCanvas" style="display: none;"></canvas>
+                      <input type="hidden" name="cropped_photo" id="croppedImageInput">
+                      <button type="submit">Save Profile</button>
+                    
+                  </div>
+            
+                </div>
+              </div>
+            </form>
+          </div>
+          {% endif %}
+
+          <div class="card large-box">
+            <h2>Register Family Members </h2>
+            <form id="profileForm" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              {% for i in family_member_range %}
+                <div class="form-grid">
+                  <input type="text" name="name_{{ i }}" required placeholder="Name">
+                  <select name="relationship_{{ i }}" required>
+                    <option value="">--Select--</option>
+                    <option value="Father">Father</option>
+                    <option value="Mother">Mother</option>
+                    <option value="Brother">Brother</option>
+                    <option value="Sister">Sister</option>
+                    <option value="Spouse">Spouse</option>
+                    <option value="Son">Son</option>
+                    <option value="Daughter">Daughter</option>
+                    <option value="Grandfather">Grandfather</option>
+                    <option value="Grandmother">Grandmother</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  <input type="text" name="custom_relationship_{{ i }}" placeholder="Specify relationship" style="display:none;">
+                  <input type="file" name="photo_{{ i }}" accept="image/png, image/jpeg, image/jpg" required>
+                </div>
+              {% endfor %}
+              <button type="submit">Save Profile</button>
+            </form>
+            
+            <script>
+              document.querySelectorAll('select[name^="relationship_"]').forEach((selectElem) => {
+                selectElem.addEventListener('change', function() {
+                  const idx = this.name.split('_')[1];
+                  const customInput = document.querySelector(`input[name="custom_relationship_${idx}"]`);
+                  if (this.value === 'Other') {
+                    customInput.style.display = 'inline-block';
+                    customInput.required = true;
+                  } else {
+                    customInput.style.display = 'none';
+                    customInput.required = false;
+                    customInput.value = '';
+                  }
+                });
+              });
+            </script>
+            
+          
+          </div>
+
+            <div class="card large-box">
+              <nav class="profile-nav">
+                <a href="#" class="tab-link active" data-tab="progress-tab">Progress</a>
+                <a href="#" class="tab-link" data-tab="message-tab">Messages</a>
+                <a href="#" class="tab-link">History</a>
+                <a href="#" class="tab-link">Customer Support</a>
+                <a href="#" class="tab-link">Change password</a>
+                <div class="broken-line"></div>
+              </nav>
+              <div class="tabs-container">
+                
+              
+                <!-- Progress Tab Content -->
+                <div id="progress-tab" class="tab-content active">
+                    <h2>Progress Section</h2>
+                    <div class="timeline-zigzag">
+                      <div class="timeline-item left">
+                        <div class="content">
+                          <span class="step-title">Step 1</span>
+                          <p>Register User Details </p>
+                        </div>
+                      </div>
+                  
+                      <div class="timeline-item right">
+                        <div class="content">
+                          <span class="step-title">Step 2</span>
+                          <p>Register Family Members </p>
+                        </div>
+                      </div>
+                  
+                      <div class="timeline-item left">
+                        <div class="content">
+                          <span class="step-title">Step 3</span>
+                          <p>Description of Step 3</p>
+                        </div>
+                      </div>
+
+                      <div class="timeline-item right">
+                        <div class="content">
+                          <span class="step-title">Step 4</span>
+                          <p>Description of Step 4</p>
+                        </div>
+                      </div>
+
+                      <div class="timeline-item left">
+                        <div class="content">
+                          <span class="step-title">Step 5</span>
+                          <p>Description of Step 5</p>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                  
+                  
+              
+                <!-- Message Tab Content -->
+                <div id="message-tab" class="tab-content">
+                  <h2>Message Section</h2>
+                  <form id="message-form">
+                    <textarea id="message-input" placeholder="Enter your message..." rows="4" required></textarea>
+                    <button type="submit">Send Message</button>
+                  </form>
+                  <div id="message-output"></div>
+                </div>
+              </div>
+              
+          </div>
+          
+  
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  
+  <script>
+    //NAV BAR MOVING LINE ANIMATION
+    document.addEventListener("DOMContentLoaded", () => {
+        const tabs = document.querySelectorAll(".tab-link");
+        const line = document.querySelector(".broken-line");
+      
+        function updateLineCut(tab) {
+          const rect = tab.getBoundingClientRect(); // Get the dimensions of the clicked tab
+          const parentRect = line.getBoundingClientRect(); // Get the dimensions of the line's parent container
+          const left = rect.left - parentRect.left; // Left position of the clicked tab relative to the line
+          const right = parentRect.width - (rect.left + rect.width - parentRect.left); // Right position of the clicked tab
+      
+          // Set the custom CSS properties to control the width of the line
+          line.style.setProperty('--cut-left', `${left}px`);
+          line.style.setProperty('--cut-right', `${right}px`);
+          line.style.setProperty('clip-path', `inset(0 ${right}px 0 ${left}px)`); // Cut both sides of the line
+        }
+      
+        tabs.forEach(tab => {
+          tab.addEventListener("click", e => {
+            e.preventDefault();
+            tabs.forEach(t => t.classList.remove("active")); // Remove active class from all tabs
+            tab.classList.add("active"); // Add active class to the clicked tab
+            updateLineCut(tab); // Update the broken line to match the selected tab
+          });
+        });
+      
+        // Initialize the broken line position for the active tab on page load
+        const activeTab = document.querySelector(".tab-link.active");
+        if (activeTab) updateLineCut(activeTab);
+      });
+      
+      
+// SECTION ANIMATION
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const tabs = document.querySelectorAll(".tab-link");
+        const tabContents = document.querySelectorAll(".tab-content");
+      
+        // Tab click event
+        tabs.forEach(tab => {
+          tab.addEventListener("click", (e) => {
+            tabs.forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
+      
+            const targetTab = tab.getAttribute("data-tab");
+            
+            tabContents.forEach(content => {
+              if (content.id === targetTab) {
+                content.classList.add("active");
+              } else {
+                content.classList.remove("active");
+              }
+            });
+          });
+        });
+      
+        // Message Form Submission
+        const messageForm = document.getElementById("message-form");
+        messageForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const messageInput = document.getElementById("message-input").value;
+          const messageOutput = document.getElementById("message-output");
+      
+          if (messageInput.trim() !== "") {
+            messageOutput.innerHTML = `<p><strong>Message Sent:</strong> ${messageInput}</p>`;
+            document.getElementById("message-input").value = ""; // Clear input
+          } else {
+            messageOutput.innerHTML = "<p>Please enter a message.</p>";
+          }
+        });
+      });
+      
+
+
+      /* Tag section of family members field */
+      const tags = document.querySelectorAll('.tag');
+      const customInput = document.getElementById('customFamilyInput');
+      const selectedValue = document.getElementById('selectedFamilyValue');
+      
+      // Attach input listener just once
+      customInput.addEventListener('input', () => {
+        selectedValue.value = customInput.value;
+      });
+      
+      tags.forEach(tag => {
+        tag.addEventListener('click', () => {
+          tags.forEach(t => t.classList.remove('selected'));
+          tag.classList.add('selected');
+      
+          const value = tag.getAttribute('data-value');
+          if (value === 'custom') {
+            customInput.style.display = 'block';
+            customInput.value = '';
+            selectedValue.value = '';
+            customInput.focus();
+          } else {
+            customInput.style.display = 'none';
+            selectedValue.value = value;
+          }
+        });
+      });
+      
+
+
+    // PHOTO Preview
+    let cropper;
+const fileInput = document.getElementById('profilePicInput');
+const preview = document.getElementById('preview');
+const form = document.querySelector('form'); // or document.getElementById('profileForm') if you have an id
+const hiddenInput = document.getElementById('croppedImageInput');
+
+fileInput.addEventListener('change', function (e) {
+  const file = e.target.files[0];
+  if (file && file.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      preview.src = event.target.result;
+      preview.style.display = 'block';
+      if (cropper) {
+        cropper.destroy();
+      }
+      cropper = new Cropper(preview, {
+        aspectRatio: 1,
+        viewMode: 1,
+        autoCropArea: 1,
+      });
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+form.addEventListener('submit', function (e) {
+  e.preventDefault();
+
+  if (cropper) {
+    // Get cropped image as base64 string (data URL)
+    const croppedDataUrl = cropper.getCroppedCanvas().toDataURL('image/png');
+    // Set the base64 string into hidden input so backend can receive it
+    hiddenInput.value = croppedDataUrl;
+
+    // Now submit the form normally
+    form.submit();
+  } else {
+    // No cropper initialized, submit normally without cropped image
+    form.submit();
+  }
+});
+
+  {% if profile_exists %}
+    document.getElementById("profileForm").style.display = "none";
+  {% endif %}
+
+
+    window.onload = () => populateStates('state');
+</script>
+  
+{% endblock body %}

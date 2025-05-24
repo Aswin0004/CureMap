@@ -1,0 +1,107 @@
+
+    {% extends "basic_templates/header.html" %}
+    {% load static %}
+    
+    {% block css %}
+    <link rel="stylesheet" href="{% static 'css/basic_css/header.css' %}">
+    <link rel="stylesheet" href="{% static 'css/loginpage/loginpage.css' %}">
+    <style>
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 8px 32px hsl(182, 100%, 35%);
+            color: #000;
+            text-align: center;
+          }
+          
+          .login-container h2 {
+            margin-bottom: 25px;
+            font-size: 28px;
+            font-weight: 600;
+            color: #000;
+          }
+          
+          .login-container input[type="text"],
+          .login-container input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border: 2.5px solid hsl(182, 100%, 35%);
+            border-radius: 8px;
+            background-color: #fff;
+            color: #000;
+            font-size: 15px;
+          }
+          
+          .login-container input::placeholder {
+            color: #000;
+            opacity: 1; /* Ensures full black */
+          }
+          
+          .login-container button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background: hsl(182, 100%, 35%);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.3s ease;
+          }
+          
+          .login-container button:hover {
+            background: hsl(186, 100%, 19%);
+          }
+          .register-text {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            align-items: center;
+          }
+          
+          .register-text a {
+            color:rgb(76, 139, 175);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+          }
+          
+          .register-text a:hover {
+            color:rgb(56, 106, 142);
+            text-decoration: underline;
+          }
+          
+          
+    </style>
+    
+    {% endblock css%}
+    
+    {% block body %}
+    <section class="section hero" style="background-image: url('../../static/img/userpage/home_background.jpg')" aria-label="home">
+      
+        <div class="login-container">
+            <h2>Login</h2>
+            <form method="post" action="{% url 'login_user' %}">
+              {% csrf_token %}
+              <input type="text" name="username" placeholder="username" required>
+              <input type="password" name="password" placeholder="Password" required>
+              <button type="submit" >Login</button>
+            </form>
+            <p class="register-text">You don't have an account? <a href="{% url 'register_user' %}">Register here</a></p>
+
+          </div>
+          
+        
+        </section>
+    
+    {% endblock body %}
+    

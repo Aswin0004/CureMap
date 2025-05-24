@@ -1,0 +1,319 @@
+{% extends "basic_templates/header.html" %}
+{% load static %}
+{% block css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+  <link rel="stylesheet" href="{% static 'css/basic_css/header.css' %}">
+  <link rel="stylesheet" href="{% static 'css/loginpage/loginpage.css' %}">
+ 
+  
+  {% endblock css%}
+  
+  {% block body %}
+  <script src="{% static 'js/basic/locationData.js' %}"></script>
+  <style>
+    
+    .login-container {
+        max-width: 1000px;
+        margin: 100px auto;
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 40px 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        color: #000;
+        text-align: center;
+      }
+      
+      .login-container h2 {
+        margin-bottom: 25px;
+        font-size: 28px;
+        font-weight: 600;
+        color: #000;
+      }
+      
+      .login-container input[type="email"],
+      .login-container input[type="text"],
+      .login-container input[type="password"] {
+        width: 100%;
+        padding: 12px 15px;
+        margin: 10px 0;
+        border: 2.5px solid hsl(182, 100%, 35%);
+        border-radius: 8px;
+        background-color: #fff;
+        color: #000;
+        font-size: 15px;
+      }
+      
+      .login-container input::placeholder {
+        color: #000;
+        opacity: 1; /* Ensures full black */
+      }
+      
+      .login-container button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 15px;
+        background: hsl(182, 100%, 35%);
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #fff;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+      
+      .login-container button:hover {
+        background: hsl(186, 100%, 19%);;
+      }
+      .register-text {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+        align-items: center;
+      }
+      
+      .register-text a {
+        color:rgb(76, 139, 175);
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+      
+      .register-text a:hover {
+        color:rgb(56, 106, 142);
+        text-decoration: underline;
+      }
+      #previewImage {
+        max-width: 100%;
+        max-height: 200px;
+        display: none;
+        margin: 10px auto;
+        border-radius: 10px;
+      }
+      .login-container input[type="file"] {
+        margin: 10px 0;
+        width: 100%;
+        padding: 10px;
+        font-size: 15px;
+        border: 1px solid #000;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        cursor: pointer;
+      }
+      
+      .login-container select {
+        width: 100%;
+        padding: 12px 15px;
+        margin: 10px 0;
+        border: 1px solid #000;
+        border-radius: 8px;
+        background-color: #fff;
+        color: #000;
+        font-size: 15px;
+      }
+      
+      .login-container select:focus,
+      .login-container input[type="file"]:focus {
+        outline: none;
+        border-color: hsl(182, 100%, 35%);
+        box-shadow: 0 0 5px hsl(186, 100%, 19%);;
+      }
+      
+      
+      .family-members-wrapper {
+        text-align: left;
+        margin-top: 15px;
+      }
+      
+      .family-members-wrapper label {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 8px;
+        color: #333;
+      }
+      
+      .tag-options-inline {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+      }
+      
+      .tag {
+        background-color: #eee;
+        padding: 6px 12px;
+
+        border: 2.5px solid hsl(182, 100%, 35%);
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      
+      .tag.active {
+        background-color: #007bff;
+        color: white;
+      }
+      
+      
+      .tag.selected {
+        background:hsl(182, 100%, 35%);;
+        color: #fff;
+      }
+      
+      #customFamilyInput {
+        width: 100%;
+        padding: 12px 15px;
+        margin-top: 10px;
+        border: 2.5px solid hsl(182, 100%, 35%);
+        border-radius: 8px;
+        background-color: #fff;
+        color: #000;
+        font-size: 15px;
+      }
+      
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+      
+      .login-container select {
+        width: 100%;
+        padding: 12px 15px;
+        margin: 10px 0;
+        border: 2.5px solid hsl(182, 100%, 35%);
+        border-radius: 8px;
+        background-color: #fff;
+        color: #000;
+        font-size: 15px;
+      }
+      
+      .login-container select:focus {
+        outline: none;
+        border-color: hsl(182, 100%, 35%);
+        box-shadow: 0 0 5px hsl(186, 100%, 19%);
+      }
+
+      .form-grid.two-column {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        
+      }
+      
+</style>
+
+  <section class="section hero" style="background-image: url('../../static/img/userpage/home_background.jpg')" aria-label="home">
+                
+    <div class="login-container">
+        <h2>Register</h2>
+        <form method="post" action="{% url 'register_user' %}">
+          {% csrf_token %}
+          
+          <div class="form-grid two-column">
+            <input type="email" name="email" required placeholder="Email" >
+            <input type="password" name="password" required placeholder="Password">
+          </div>
+          
+          <div class="form-grid">
+            <input type="text" name="first_name" required placeholder="First Name">
+            <input type="text" name="second_name" placeholder="Second Name">
+        
+            <input type="text" name="last_name" required placeholder="Last Name">
+            <input type="text" name="phone" required placeholder="Phone">
+        
+            <select name="blood_group" required>
+              <option value="">Select Blood Group</option>
+              {% for bg in blood_groups %}
+                <option value="{{ bg }}">{{ bg }}</option>
+              {% endfor %}
+            </select>
+            
+            <input type="text" name="pincode" required placeholder="Pincode">
+            <!-- State Dropdown -->
+<select id="state" name="state" class="form-control" required onchange="populateDistricts('state', 'district')">
+  <option value="">Select State</option>
+</select>
+
+<!-- District Dropdown -->
+<select id="district" name="district" class="form-control" required>
+  <option value="">Select District</option>
+</select>
+
+            <input type="text" name="place" required placeholder="Place">
+          </div>
+        
+          <!-- Family Members Section -->
+          <div class="family-members-wrapper">
+            <label>Select Family Members</label>
+            <div class="tag-options-inline">
+              <span class="tag" data-value="1">1</span>
+              <span class="tag" data-value="2">2</span>
+              <span class="tag" data-value="3">3</span>
+              <span class="tag" data-value="4">4</span>
+              <span class="tag" data-value="5">5</span>
+              <span class="tag custom-tag" data-value="custom">Custom</span>
+              
+              <!-- Custom input shown inline -->
+              <input type="number" name="number_of_family_members" id="customFamilyInput" min="1" placeholder="Enter custom number" style="display: none; width: 33%; margin-left: 10px 0;" />
+              <input type="hidden" name="selected_family_members" id="selectedFamilyValue">
+            </div>
+            
+          </div>
+          <button type="submit">Register</button>
+          
+        
+  
+
+        
+        </form>
+        
+
+      </div>
+      
+    
+      <!-- Image Section -->
+      
+    </div>
+  </section>
+  <script>
+
+
+    /* Tag section of family members field */
+
+    const tags = document.querySelectorAll('.tag');
+    const customInput = document.getElementById('customFamilyInput');
+    const selectedValue = document.getElementById('selectedFamilyValue');
+  
+    tags.forEach(tag => {
+      tag.addEventListener('click', () => {
+        tags.forEach(t => t.classList.remove('selected'));
+        tag.classList.add('selected');
+  
+        const value = tag.getAttribute('data-value');
+        if (value === 'custom') {
+          customInput.style.display = 'block';
+          selectedValue.value = '';
+          customInput.addEventListener('input', () => {
+            selectedValue.value = customInput.value;
+          });
+        } else {
+          customInput.style.display = 'none';
+          selectedValue.value = value;
+        }
+      });
+    });
+ 
+  </script>
+
+  <script>
+    window.onload = () => populateStates('state');
+</script>
+  {% endblock body %}
+
+ 
