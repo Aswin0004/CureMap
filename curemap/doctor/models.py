@@ -1,9 +1,9 @@
 from django.db import models
 from multiselectfield import MultiSelectField 
 from hospital.models import Hospital  # Import Hospital model if in another app
+from ckeditor.fields import RichTextField
 
 # Create your models here.
-from multiselectfield import MultiSelectField
 
 TIME_SLOT_CHOICES = [
     ('09:00 AM', '09:00 AM'),
@@ -89,13 +89,40 @@ class Doctor(models.Model):
     experience_years = models.PositiveIntegerField(blank=True, null=True)
     hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, related_name='doctors')
     available_days = MultiSelectField(choices=DAY_CHOICES)
-    # consultation_times = MultiSelectField(
-    #     choices=TIME_SLOT_CHOICES,
-    #     help_text="Select one or more consultation time slots"
-    # )
+    
     # about = models.TextField(blank=True, null=True)
     rating = models.FloatField(default=0.0)
     is_available = models.BooleanField(default=True)
 
     def __str__(self):
         return f"Dr. {self.first_name} {self.second_name or ''} {self.last_name}".strip()
+
+
+
+class Doctor_consultation_times(models.Model):
+    doctor = models.OneToOneField(Doctor, on_delete=models.CASCADE, related_name='consultation_times')
+
+    monday = MultiSelectField(choices=TIME_SLOT_CHOICES, blank=True)
+    tuesday = MultiSelectField(choices=TIME_SLOT_CHOICES, blank=True)
+    wednesday = MultiSelectField(choices=TIME_SLOT_CHOICES, blank=True)
+    thursday = MultiSelectField(choices=TIME_SLOT_CHOICES, blank=True)
+    friday = MultiSelectField(choices=TIME_SLOT_CHOICES, blank=True)
+    saturday = MultiSelectField(choices=TIME_SLOT_CHOICES, blank=True)
+    sunday = MultiSelectField(choices=TIME_SLOT_CHOICES, blank=True)
+
+    def __str__(self):
+        return f"Consultation Times for Dr. {self.doctor.first_name} {self.doctor.last_name}"
+
+    
+
+class Blog(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='blogs')
+    title = models.CharField(max_length=255)
+    content = RichTextField()
+    image = models.ImageField(upload_to='doctor_blogs/', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_published = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title

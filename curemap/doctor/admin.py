@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Doctor
+from .models import Doctor,Blog,Doctor_consultation_times
 # Register your models here.
 
 @admin.register(Doctor)
@@ -15,3 +15,7 @@ class DoctorAdmin(admin.ModelAdmin):
     def specialization_display(self, obj):
         return ", ".join(obj.specialization)
     specialization_display.short_description = 'Specializations'
+
+
+admin.site.register(Blog)
+admin.site.register(Doctor_consultation_times)
