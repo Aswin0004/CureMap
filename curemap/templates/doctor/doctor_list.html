@@ -310,7 +310,7 @@
       <img src="{{ doctor.photo.url }}" alt="Dr. {{ doctor.first_name }} {{ doctor.last_name }}" class="doctor-photo">
       <div class="card-body">
         <h3>
-          {% comment %} <a href="{% url 'doctor_detail' doctor.id %}" class="doctor-link"> {% endcomment %}
+          <a href="{% url 'doctor_detail' doctor.id %}" class="doctor-link">
             <strong>Dr. {{ doctor.first_name }}{% if doctor.second_name %} {{ doctor.second_name }}{% endif %} {{ doctor.last_name }}</strong>
           </a>
         </h3>

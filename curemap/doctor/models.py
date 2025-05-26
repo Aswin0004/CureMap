@@ -83,17 +83,17 @@ class Doctor(models.Model):
     photo = models.ImageField(upload_to='doctor_photos/')
     email = models.EmailField(unique=True, blank=True, null=True)
     phone = models.CharField(max_length=15, blank=True, null=True)
-    gender = models.CharField(max_length=10, choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other')])
+    gender = models.CharField(max_length=10, choices=[('male', 'Male'), ('female', 'Female')])
     qualification = models.CharField(max_length=255)
     specialization = MultiSelectField(choices=SPECIALIZATION_CHOICES)
     experience_years = models.PositiveIntegerField(blank=True, null=True)
     hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, related_name='doctors')
     available_days = MultiSelectField(choices=DAY_CHOICES)
-    consultation_times = MultiSelectField(
-        choices=TIME_SLOT_CHOICES,
-        help_text="Select one or more consultation time slots"
-    )
-    about = models.TextField(blank=True, null=True)
+    # consultation_times = MultiSelectField(
+    #     choices=TIME_SLOT_CHOICES,
+    #     help_text="Select one or more consultation time slots"
+    # )
+    # about = models.TextField(blank=True, null=True)
     rating = models.FloatField(default=0.0)
     is_available = models.BooleanField(default=True)
 
