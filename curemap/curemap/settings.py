@@ -38,10 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ckeditor',
-<<<<<<< HEAD
-=======
     'multiselectfield',
->>>>>>> 957636e (doctor and hospital model update)
     'user',
     'login',
     'hospital',
