@@ -1,9 +1,6 @@
 from django.contrib import admin
-<<<<<<< HEAD
-from .models import Doctor,Blog,Doctor_consultation_times
-=======
+from .models import Doctor,DoctorConsultationTimes,DoctorBlog
 from .models import Doctor,DoctorBlog,DoctorConsultationTimes
->>>>>>> 957636e (doctor and hospital model update)
 # Register your models here.
 
 @admin.register(Doctor)
@@ -21,13 +18,6 @@ class DoctorAdmin(admin.ModelAdmin):
     specialization_display.short_description = 'Specializations'
 
 
-<<<<<<< HEAD
-admin.site.register(Blog)
-admin.site.register(Doctor_consultation_times)
-=======
-
-
 
 admin.site.register(DoctorBlog)
 admin.site.register(DoctorConsultationTimes)
->>>>>>> 957636e (doctor and hospital model update)
