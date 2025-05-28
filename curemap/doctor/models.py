@@ -2,8 +2,13 @@ from django.db import models
 from multiselectfield import MultiSelectField 
 from hospital.models import Hospital  # Import Hospital model if in another app
 from ckeditor.fields import RichTextField
+<<<<<<< HEAD
 
 # Create your models here.
+=======
+# Create your models here.
+
+>>>>>>> 957636e (doctor and hospital model update)
 
 TIME_SLOT_CHOICES = [
     ('09:00 AM', '09:00 AM'),
@@ -89,8 +94,12 @@ class Doctor(models.Model):
     experience_years = models.PositiveIntegerField(blank=True, null=True)
     hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, related_name='doctors')
     available_days = MultiSelectField(choices=DAY_CHOICES)
+<<<<<<< HEAD
     
     # about = models.TextField(blank=True, null=True)
+=======
+    about = models.TextField(blank=True, null=True)
+>>>>>>> 957636e (doctor and hospital model update)
     rating = models.FloatField(default=0.0)
     is_available = models.BooleanField(default=True)
 
@@ -98,11 +107,18 @@ class Doctor(models.Model):
         return f"Dr. {self.first_name} {self.second_name or ''} {self.last_name}".strip()
 
 
+<<<<<<< HEAD
 
 class Doctor_consultation_times(models.Model):
     doctor = models.OneToOneField(Doctor, on_delete=models.CASCADE, related_name='consultation_times')
 
     monday = MultiSelectField(choices=TIME_SLOT_CHOICES, blank=True)
+=======
+class DoctorConsultationTimes(models.Model):
+    doctor = models.OneToOneField(Doctor, on_delete=models.CASCADE, related_name='consultation_times')
+
+    monday = MultiSelectField(choices=TIME_SLOT_CHOICES, blank=True, help_text="Select one or more consultation time slots")
+>>>>>>> 957636e (doctor and hospital model update)
     tuesday = MultiSelectField(choices=TIME_SLOT_CHOICES, blank=True)
     wednesday = MultiSelectField(choices=TIME_SLOT_CHOICES, blank=True)
     thursday = MultiSelectField(choices=TIME_SLOT_CHOICES, blank=True)
@@ -112,10 +128,19 @@ class Doctor_consultation_times(models.Model):
 
     def __str__(self):
         return f"Consultation Times for Dr. {self.doctor.first_name} {self.doctor.last_name}"
+<<<<<<< HEAD
 
     
 
 class Blog(models.Model):
+=======
+    
+
+
+
+
+class DoctorBlog(models.Model):
+>>>>>>> 957636e (doctor and hospital model update)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='blogs')
     title = models.CharField(max_length=255)
     content = RichTextField()
