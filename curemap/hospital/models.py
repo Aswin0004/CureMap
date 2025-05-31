@@ -1,6 +1,9 @@
 from django.db import models
 from multiselectfield import MultiSelectField
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9e9b906 (doctor and hospital model change commit)
 # Create your models here.
 
 class Hospital(models.Model):
@@ -86,3 +89,83 @@ class HospitalDetail(models.Model):
     def __str__(self):
         return f"Details of {self.hospital.name}"
 
+
+
+# Choice tuples
+FEATURE_CHOICES = [
+    ('ICU', 'ICU'),
+    ('Ambulance', 'Ambulance'),
+    ('Pharmacy', 'Pharmacy'),
+    ('Blood Bank', 'Blood Bank'),
+    ('Operation Theatre', 'Operation Theatre'),
+    ('Lab', 'Lab'),
+    ('Emergency', 'Emergency'),
+    ('Canteen', 'Canteen'),
+    ('Parking', 'Parking'),
+]
+
+HOSPITAL_TYPE_CHOICES = [
+    ('Public', 'Public'),
+    ('Private', 'Private'),
+    ('Charitable', 'Charitable'),
+    ('Specialized', 'Specialized'),
+    ('Multi-Specialty', 'Multi-Specialty'),
+    ('Teaching', 'Teaching'),
+]
+
+INSURANCE_CHOICES = [
+    ('Star Health', 'Star Health'),
+    ('ICICI Lombard', 'ICICI Lombard'),
+    ('Bajaj Allianz', 'Bajaj Allianz'),
+    ('Reliance General', 'Reliance General'),
+    ('Niva Bupa', 'Niva Bupa'),
+    ('Care Health', 'Care Health'),
+    ('Aditya Birla', 'Aditya Birla'),
+    ('HDFC Ergo', 'HDFC Ergo'),
+]
+SPECIALIZATION_CHOICES = [
+    ('allergy_immunology', 'Allergy & Immunology'),
+    ('anesthesiology', 'Anesthesiology'),
+    ('audiology', 'Audiology'),
+    ('cardiology', 'Cardiology'),
+    ('critical_care', 'Critical Care Medicine'),
+    ('dermatology', 'Dermatology'),
+    ('endocrinology', 'Endocrinology'),
+    ('ent', 'ENT (Ear, Nose & Throat)'),
+    ('family_medicine', 'Family Medicine'),
+    ('gastroenterology', 'Gastroenterology'),
+    ('general_medicine', 'General Medicine'),
+    ('geriatrics', 'Geriatrics'),
+    ('gynecology', 'Gynecology'),
+    ('hematology', 'Hematology'),
+    ('infectious_diseases', 'Infectious Diseases'),
+    ('internal_medicine', 'Internal Medicine'),
+    ('nephrology', 'Nephrology'),
+    ('neurology', 'Neurology'),
+    ('nuclear_medicine', 'Nuclear Medicine'),
+    ('obstetrics', 'Obstetrics'),
+    ('oncology', 'Oncology'),
+    ('ophthalmology', 'Ophthalmology'),
+    ('orthopedics', 'Orthopedics'),
+    ('pain_management', 'Pain Management'),
+    ('pathology', 'Pathology'),
+    ('pediatrics', 'Pediatrics'),
+    ('plastic_surgery', 'Plastic Surgery'),
+    ('psychiatry', 'Psychiatry'),
+    ('pulmonology', 'Pulmonology'),
+    ('radiology', 'Radiology'),
+    ('rheumatology', 'Rheumatology'),
+    ('sports_medicine', 'Sports Medicine'),
+    ('surgery', 'Surgery'),
+    ('urology', 'Urology'),
+    ('vascular_surgery', 'Vascular Surgery'),
+]
+
+class HospitalDetails(models.Model):
+    hospital = models.OneToOneField('Hospital', on_delete=models.CASCADE, related_name='details')
+    features = MultiSelectField(choices=FEATURE_CHOICES, blank=True)
+    hospital_type = MultiSelectField(choices=HOSPITAL_TYPE_CHOICES, blank=True)
+    insurance_accepted = MultiSelectField(choices=INSURANCE_CHOICES, blank=True)
+    specialization = MultiSelectField(choices=SPECIALIZATION_CHOICES, blank=True)
+    def __str__(self):
+        return f"Details for {self.hospital.name}"

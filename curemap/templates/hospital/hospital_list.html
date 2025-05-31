@@ -327,16 +327,12 @@
         {% endfor %}
       </div>
       
-      
-    
-  
-      <!-- Pagination -->
-      <div class="pagination" id="pagination">
-      </div>
     </main>
   </div>
   
   
+        <!-- Pagination Controls -->
+        <div class="pagination" id="paginationControls"></div><br>
   
   
        
@@ -345,87 +341,71 @@
 </section>
 
 
+
 <script>
-    const items = Array.from({ length: 50 }, (_, i) => `Item ${i + 1}`);
-    const itemsPerPage = 5;
-    let currentPage = 1;
-  
-    function displayItems(page) {
-      const container = document.getElementById('item-container');
-      container.innerHTML = '';
-      const start = (page - 1) * itemsPerPage;
-      const end = start + itemsPerPage;
-      const paginatedItems = items.slice(start, end);
-  
-      paginatedItems.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'item';
-        div.textContent = item;
-        container.appendChild(div);
-      });
-    }
-  
-    function setupPagination() {
-      const pageCount = Math.ceil(items.length / itemsPerPage);
-      const pagination = document.getElementById('pagination');
-      pagination.innerHTML = '';
-  
-      for (let i = 1; i <= pageCount; i++) {
-        const a = document.createElement('a');
-        a.textContent = i;
-        a.href = "#";
-        if (i === currentPage) a.classList.add('active');
-        a.addEventListener('click', function(e) {
-          e.preventDefault();
-          currentPage = i;
-          displayItems(currentPage);
-          setupPagination();
-        });
-        pagination.appendChild(a);
-      }
-    }
-  
-    // Initialize on page load
-    displayItems(currentPage);
-    setupPagination();
-  </script>
- <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const cards = document.querySelectorAll(".hospital-card");
+  document.addEventListener('DOMContentLoaded', () => {
+    const hospitalCards = document.querySelectorAll('.card.hospital-card');
     const cardsPerPage = 6;
-    const totalPages = Math.ceil(cards.length / cardsPerPage);
-    const pagination = document.getElementById("pagination");
+    const paginationControls = document.getElementById('paginationControls');
+    let currentPage = 1;
+    const totalPages = Math.ceil(hospitalCards.length / cardsPerPage);
 
     function showPage(page) {
+      currentPage = page;
       const start = (page - 1) * cardsPerPage;
       const end = start + cardsPerPage;
-      cards.forEach((card, index) => {
-        card.style.display = index >= start && index < end ? "block" : "none";
+
+      hospitalCards.forEach((card, index) => {
+        card.style.display = (index >= start && index < end) ? 'flex' : 'none';
       });
 
-      // Highlight active page
-      document.querySelectorAll(".pagination a").forEach(a => a.classList.remove("active"));
-      const currentPageLink = document.querySelector(`.pagination a[data-page="${page}"]`);
-      if (currentPageLink) currentPageLink.classList.add("active");
+      // Update pagination buttons
+      renderPagination();
     }
 
-    function createPagination() {
-      pagination.innerHTML = ""; // clear
-      for (let i = 1; i <= totalPages; i++) {
-        const pageLink = document.createElement("a");
-        pageLink.href = "#";
-        pageLink.textContent = i;
-        pageLink.setAttribute("data-page", i);
-        pageLink.addEventListener("click", (e) => {
+    function renderPagination() {
+      paginationControls.innerHTML = '';
+
+      // Previous button
+      const prevBtn = document.createElement('a');
+      prevBtn.href = "#";
+      prevBtn.textContent = "Prev";
+      prevBtn.classList.toggle('disabled', currentPage === 1);
+      prevBtn.onclick = e => {
+        e.preventDefault();
+        if (currentPage > 1) showPage(currentPage - 1);
+      };
+      paginationControls.appendChild(prevBtn);
+
+      // Page numbers
+      for(let i = 1; i <= totalPages; i++) {
+        const pageBtn = document.createElement('a');
+        pageBtn.href = "#";
+        pageBtn.textContent = i;
+        if (i === currentPage) {
+          pageBtn.classList.add('active');
+        }
+        pageBtn.onclick = e => {
           e.preventDefault();
           showPage(i);
-        });
-        pagination.appendChild(pageLink);
+        };
+        paginationControls.appendChild(pageBtn);
       }
+
+      // Next button
+      const nextBtn = document.createElement('a');
+      nextBtn.href = "#";
+      nextBtn.textContent = "Next";
+      nextBtn.classList.toggle('disabled', currentPage === totalPages);
+      nextBtn.onclick = e => {
+        e.preventDefault();
+        if (currentPage < totalPages) showPage(currentPage + 1);
+      };
+      paginationControls.appendChild(nextBtn);
     }
 
-    createPagination();
-    showPage(1); // Show first page by default
+    // Initialize
+    showPage(1);
   });
 </script>
 

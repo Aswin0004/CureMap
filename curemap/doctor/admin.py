@@ -6,7 +6,7 @@ from .models import Doctor,DoctorBlog,DoctorConsultationTimes
 @admin.register(Doctor)
 class DoctorAdmin(admin.ModelAdmin):
     list_display = (
-        'first_name', 'second_name', 'last_name', 'hospital',
+        'first_name', 'second_name', 'last_name', 'role', 'hospital',
         'specialization_display', 'experience_years', 'is_available', 'rating'
     )
     list_filter = ('hospital', 'specialization', 'available_days', 'is_available')

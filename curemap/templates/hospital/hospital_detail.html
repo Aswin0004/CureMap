@@ -27,7 +27,7 @@
 
   .left-container, .right-container {
     background-color: white;
-    border: 2px solid #007BFF;
+    border: 2px solid hsl(182, 100%, 35%);
     border-radius: 8px;
     padding: 20px;
     box-sizing: border-box;
@@ -95,7 +95,7 @@
   
   .gallery-item {
     background: white;
-    border: 1px solid #007bff;
+    border: 1px solid hsl(182, 100%, 35%);
     border-radius: 8px;
     padding: 10px;
     text-align: center;
@@ -114,6 +114,35 @@
     margin-top: 8px;
     color: #333;
   }
+
+
+  {% comment %} Doctor card design  {% endcomment %}
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  
+  .doctor-card {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0  2px 6px hsl(182, 100%, 35%);
+    text-align: center;
+  }
+  
+  .doctor-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .doctor-info {
+    margin-top: 10px;
+  }
+  
   
 </style>
 
@@ -189,6 +218,35 @@
       </div>
     </div>
   </section>
+  
+  
+{% comment %} Doctors-section {% endcomment %}
+<section class="section listing" aria-labelledby="listing-label">
+  <div class="container">
+    <h2 style="text-align: center; margin-bottom: 20px;">Doctors</h2>
+    <div class="gallery-grid">
+      {% if doctors %}
+        {% for doctor in doctors %}
+          <div class="doctor-card">
+            <img src="{{ doctor.photo.url }}" alt="Dr. {{ doctor.first_name }} {{ doctor.last_name }}" class="doctor-image">
+            <div class="doctor-info">
+              <h3>
+              <a href="{% url 'doctor_detail' doctor.id %}">Dr. {{ doctor.first_name }} {% if doctor.second_name %} {{ doctor.second_name }} {% endif %} {{ doctor.last_name }}</a></h3>
+              <p><strong>Specialization:</strong> {{ doctor.specialization|join:", " }}</p>
+              <p><strong>Experience:</strong> {{ doctor.experience_years }} years</p>
+              <p><strong>Available Days:</strong> {{ doctor.available_days|join:", " }}</p>
+              <p><strong>Rating:</strong> {{ doctor.rating }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p style="text-align: center;">No doctors found for this hospital.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+
   
   
   
