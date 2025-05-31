@@ -37,10 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-<<<<<<< HEAD
     'ckeditor',
-=======
->>>>>>> 9e9b906 (doctor and hospital model change commit)
     'multiselectfield',
     'user',
     'login',
