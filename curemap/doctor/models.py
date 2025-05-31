@@ -83,12 +83,8 @@ class Doctor(models.Model):
     photo = models.ImageField(upload_to='doctor_photos/')
     email = models.EmailField(unique=True, blank=True, null=True)
     phone = models.CharField(max_length=15, blank=True, null=True)
-<<<<<<< HEAD
-    gender = models.CharField(max_length=10, choices=[('male', 'Male'), ('female', 'Female')])
-=======
     gender = models.CharField(max_length=10, choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other')])
     role = models.CharField(max_length=255, blank=True, null=True)
->>>>>>> 9e9b906 (doctor and hospital model change commit)
     qualification = models.CharField(max_length=255)
     specialization = MultiSelectField(choices=SPECIALIZATION_CHOICES)
     experience_years = models.PositiveIntegerField(blank=True, null=True)
@@ -102,18 +98,11 @@ class Doctor(models.Model):
         return f"Dr. {self.first_name} {self.second_name or ''} {self.last_name}".strip()
 
 
-<<<<<<< HEAD
-class DoctorConsultationTimes(models.Model):
-    doctor = models.OneToOneField(Doctor, on_delete=models.CASCADE, related_name='consultation_times')
-
-    monday = MultiSelectField(choices=TIME_SLOT_CHOICES, blank=True)
-=======
 
 class Doctor_consultation_times(models.Model):
     doctor = models.OneToOneField(Doctor, on_delete=models.CASCADE, related_name='consultation_times')
 
     monday = MultiSelectField(choices=TIME_SLOT_CHOICES, blank=True,)
->>>>>>> 9e9b906 (doctor and hospital model change commit)
     tuesday = MultiSelectField(choices=TIME_SLOT_CHOICES, blank=True)
     wednesday = MultiSelectField(choices=TIME_SLOT_CHOICES, blank=True)
     thursday = MultiSelectField(choices=TIME_SLOT_CHOICES, blank=True)
@@ -125,28 +114,18 @@ class Doctor_consultation_times(models.Model):
         return f"Consultation Times for Dr. {self.doctor.first_name} {self.doctor.last_name}"
 
 
-<<<<<<< HEAD
-class DoctorBlog(models.Model):
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='blogs')
-    title = models.CharField(max_length=255)
-    content = RichTextField()
-=======
 
 
 class DoctorBlog(models.Model):
     doctor = models.OneToOneField(Doctor, on_delete=models.CASCADE, related_name='blogs')
     title = models.CharField(max_length=255)
     content = models.TextField(help_text="Use line breaks for paragraphs and * for bullet points.")
->>>>>>> 9e9b906 (doctor and hospital model change commit)
     image = models.ImageField(upload_to='doctor_blogs/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=True)
 
     def __str__(self):
-<<<<<<< HEAD
-        return self.title
-=======
         return f"Blogs that made by Dr. {self.doctor.first_name} {self.doctor.last_name}"
     
 
@@ -164,4 +143,3 @@ class DoctorVideo(models.Model):
 
     def __str__(self):
         return f"Video by Dr. {self.doctor.first_name} {self.doctor.last_name}: {self.title}"
->>>>>>> 9e9b906 (doctor and hospital model change commit)
