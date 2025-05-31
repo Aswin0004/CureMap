@@ -99,7 +99,7 @@ class Doctor(models.Model):
 
 
 
-class Doctor_consultation_times(models.Model):
+class DoctorConsultationTimes(models.Model):
     doctor = models.OneToOneField(Doctor, on_delete=models.CASCADE, related_name='consultation_times')
 
     monday = MultiSelectField(choices=TIME_SLOT_CHOICES, blank=True,)

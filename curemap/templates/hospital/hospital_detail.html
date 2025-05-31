@@ -225,7 +225,7 @@
   <div class="container">
     <h2 style="text-align: center; margin-bottom: 20px;">Doctors</h2>
     <div class="gallery-grid">
-      {% if doctors %}
+      {% if doctor %}
         {% for doctor in doctors %}
           <div class="doctor-card">
             <img src="{{ doctor.photo.url }}" alt="Dr. {{ doctor.first_name }} {{ doctor.last_name }}" class="doctor-image">

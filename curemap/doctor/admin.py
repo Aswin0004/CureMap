@@ -1,6 +1,5 @@
 from django.contrib import admin
 from .models import Doctor,DoctorConsultationTimes,DoctorBlog
-from .models import Doctor,DoctorBlog,DoctorConsultationTimes
 # Register your models here.
 
 @admin.register(Doctor)

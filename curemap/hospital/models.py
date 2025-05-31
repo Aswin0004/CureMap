@@ -1,9 +1,5 @@
 from django.db import models
 from multiselectfield import MultiSelectField
-<<<<<<< HEAD
-
-=======
->>>>>>> 9e9b906 (doctor and hospital model change commit)
 # Create your models here.
 
 class Hospital(models.Model):
@@ -41,53 +37,6 @@ class HospitalAlbum(models.Model):
     def __str__(self):
         return f"{self.hospital.name} - {self.image.name}"
     
-
-
-
-class HospitalDetail(models.Model):
-    hospital = models.OneToOneField('Hospital', on_delete=models.CASCADE, related_name='details')
-
-    about = models.TextField(help_text="General description about the hospital.")
-    mission = models.TextField(blank=True, null=True)
-    vision = models.TextField(blank=True, null=True)
-
-    SPECIALIZATION_CHOICES = [
-        ('Cardiology', 'Cardiology'),
-        ('Orthopedics', 'Orthopedics'),
-        ('Neurology', 'Neurology'),
-        ('Pediatrics', 'Pediatrics'),
-        ('Oncology', 'Oncology'),
-        ('General Surgery', 'General Surgery'),
-        ('Gynecology', 'Gynecology'),
-        ('Dermatology', 'Dermatology'),
-        ('ENT', 'ENT'),
-    ]
-
-    SERVICE_CHOICES = [
-        ('ICU', 'ICU'),
-        ('Emergency', '24/7 Emergency'),
-        ('Pharmacy', 'Pharmacy'),
-        ('Diagnostics', 'Diagnostics'),
-        ('Ambulance', 'Ambulance'),
-        ('Blood Bank', 'Blood Bank'),
-        ('Physiotherapy', 'Physiotherapy'),
-    ]
-
-    FACILITY_CHOICES = [
-        ('Parking', 'Parking'),
-        ('Canteen', 'Canteen'),
-        ('WiFi', 'WiFi'),
-        ('Waiting Area', 'Waiting Area'),
-        ('ATM', 'ATM'),
-        ('Wheelchair Access', 'Wheelchair Access'),
-    ]
-
-    specializations = MultiSelectField(choices=SPECIALIZATION_CHOICES, blank=True)
-    services = MultiSelectField(choices=SERVICE_CHOICES, blank=True)
-    facilities = MultiSelectField(choices=FACILITY_CHOICES, blank=True)
-
-    def __str__(self):
-        return f"Details of {self.hospital.name}"
 
 
 
@@ -163,6 +112,9 @@ SPECIALIZATION_CHOICES = [
 
 class HospitalDetails(models.Model):
     hospital = models.OneToOneField('Hospital', on_delete=models.CASCADE, related_name='details')
+    about = models.TextField(help_text="General description about the hospital.",blank=True, null=True)
+    mission = models.TextField(blank=True, null=True)
+    vision = models.TextField(blank=True, null=True)
     features = MultiSelectField(choices=FEATURE_CHOICES, blank=True)
     hospital_type = MultiSelectField(choices=HOSPITAL_TYPE_CHOICES, blank=True)
     insurance_accepted = MultiSelectField(choices=INSURANCE_CHOICES, blank=True)

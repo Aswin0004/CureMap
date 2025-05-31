@@ -305,7 +305,7 @@
         
 <!-- Container: Doctor Cards -->
 <div class="doctor-cards" id="doctorCards">
-  {% for doctor in doctors %}
+  {% for doctor in doctor %}
     <div class="card doctor-card">
       <img src="{{ doctor.photo.url }}" alt="Dr. {{ doctor.first_name }} {{ doctor.last_name }}" class="doctor-photo">
       <div class="card-body">
