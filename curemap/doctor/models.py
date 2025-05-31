@@ -1,7 +1,7 @@
 from django.db import models
 from multiselectfield import MultiSelectField 
 from hospital.models import Hospital  # Import Hospital model if in another app
-from hospital.models import Hospital  # Import Hospital model if in another app
+
 
 TIME_SLOT_CHOICES = [
     ('09:00 AM', '09:00 AM'),
