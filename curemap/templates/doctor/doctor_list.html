@@ -305,7 +305,7 @@
         
 <!-- Container: Doctor Cards -->
 <div class="doctor-cards" id="doctorCards">
-  {% for doctor in doctor %}
+  {% for doctor in doctors %}
     <div class="card doctor-card">
       <img src="{{ doctor.photo.url }}" alt="Dr. {{ doctor.first_name }} {{ doctor.last_name }}" class="doctor-photo">
       <div class="card-body">
@@ -327,9 +327,9 @@
           </a>
         </p>
 
-        {% if doctor.consultation_times %}
-          <p><strong>Consultation Times:</strong>
-            {{ doctor.consultation_times|cut:" "|linebreaksbr }}
+        {% if doctor.available_days %}
+          <p><strong>Available Days:</strong>
+            {{ doctor.available_days}}
           </p>
         {% endif %}
 

@@ -1,12 +1,864 @@
-<<<<<<< HEAD
-<h1> <strong>Dr. {{ doctors.first_name }}{% if doctors.second_name %} {{ doctor.second_name }}{% endif %} {{ doctors.last_name }}</strong></h1>
-=======
-<h1>
+
+{% extends "basic_templates/doctorheader.html" %}
+{% load static %}
+
+{% block css %}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+<!-- Include Cropper.js CSS and JS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+<link rel="stylesheet" href="{% static 'css/basic_css/header.css' %}">
+
+<script src="{% static 'js/basic/locationData.js' %}"></script>
+{% endblock css %}
+
+{% block body %}<br>
+<style>
+    .grid-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      list-style: none;
+      padding: 0;
+    }
+  
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+  
+    .medi-locker-btn {
+        padding: 10px 20px;
+        background-color: hsl(182, 100%, 35%);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .medi-locker-btn:hover {
+        background: hsl(186, 100%, 19%);
+      }
+  
+    .profile-layout {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+  
+    .left-sidebar {
+      flex: 1;
+      min-width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+  
+    .profile-card,
+    .family-card,
+    .card {
+      background-color: #f9f9f9;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px hsl(182, 100%, 35%);;
+    }
+      
+      .profile-pic {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 0 auto 10px auto; /* Center image and add spacing */
+        display: block;
+      }
+      
+      .user-name {
+        font-size: 1.6rem; /* Bigger size */
+        font-weight: 800;  /* Darker font */
+        color: #222;       /* Darker text color */
+        margin-bottom: 0.5rem;
+        text-align: center; /* Centers all child elements */
+      }
+      
+    .button-group {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+  
+    .button-group button {
+        padding: 10px;
+        background-color: hsl(182, 100%, 35%);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .button-group button:hover {
+        background: hsl(186, 100%, 19%);
+      }
+  
+    .family-card h4 {
+      margin-bottom: 0.75rem;
+    }
+  
+    .family-photos {
+        display: flex;
+        flex-wrap: wrap;         /* Enables wrapping to next line */
+        gap: 10px;
+        max-width: 100%;         /* Ensure container doesn’t overflow */
+        overflow: hidden;        /* Optional: hides anything that still overflows */
+      }
+      .family-pic {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid hsl(182, 100%, 35%); /* Blue border, adjust color as needed */
+      }
+      .family-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+      }
+      
+      .add-btn {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+        background-color:hsl(182, 100%, 35%);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      
+      .add-btn:hover {
+        background-color: hsl(186, 100%, 19%);
+      }
+      
+      
+  
+    .right-content {
+      flex: 2;
+      min-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+  
+    .two-cards-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+  
+    .two-cards-row .card {
+      flex: 1;
+      min-width: 240px;
+    }
+  
+    .large-box {
+      background:rgb(217, 237, 240);
+    }
+  
+    .profile-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 10px;
+    }
+  
+    .profile-nav a {
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+      padding: 6px 12px;
+      background: #fff;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: background 0.3s;
+    }
+  
+    .profile-nav a:hover {
+      background-color: #e0e0e0;
+    }
+  
+    @media (max-width: 768px) {
+      .profile-layout {
+        flex-direction: column;
+      }
+  
+      .two-cards-row {
+        flex-direction: column;
+      }
+    }
+
+    .tab-container {
+        position: relative;
+        padding-top: 40px;
+      }
+      
+      .profile-nav {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        z-index: 2;
+        margin-bottom: 20px; 
+      }
+      
+      .tab-link {
+        background: white;
+        padding: 10px 15px;
+        font-weight: bold;
+        color: #333;
+        text-decoration: none;
+        position: relative;
+        transition: transform 0.3s;
+      }
+      
+      .tab-link.active {
+        transform: translateY(20px); /* move it below the line */
+        background: white;
+        z-index: 3;
+      }
+      
+      .broken-line {
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        height: 3px;
+        width: 100%;
+        background: #0077cc;
+        z-index: 1;
+        transition: 0.3s ease-in-out;
+        clip-path: inset(0 0 0 0); /* Default to no clipping */
+      }
+      
+      .broken-line::before,
+      .broken-line::after {
+        content: '';
+        position: absolute;
+        height: 3px;
+        background: white; /* Line color for the "cut" effect */
+        transition: all 0.3s ease;
+        z-index: 2;
+      }
+      
+      
+      /* Tab Links */
+
+
+.tab-content {
+  display: none;
+  margin-top: 20px;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Timeline Styles */
+.timeline-zigzag {
+  position: relative;
+  max-width: 800px;
+  margin: 1px auto;
+  padding: 20px 0;
+}
+
+.timeline-zigzag::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background-color: #ccc;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.timeline-item {
+  padding: 20px 40px;
+  position: relative;
+  width: 50%;
+}
+
+.timeline-item.left {
+  left: 0;
+  text-align: right;
+}
+
+.timeline-item.right {
+  left: 50%;
+  text-align: left;
+}
+
+.timeline-item .content {
+  background: linear-gradient(135deg, #f0f0f0, #e6e6e6);
+  padding: 15px 20px;
+  border-radius: 20px;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: inline-block;
+}
+
+.timeline-item.left .content::after,
+.timeline-item.right .content::after {
+  content: '';
+  position: absolute;
+  top: 20px;
+  width: 15px;
+  height: 15px;
+  background-color: #fff;
+  border: 4px solid #4CAF50;
+  border-radius: 50%;
+  z-index: 3;
+}
+
+.timeline-item.left .content::after {
+  right: -50px;
+}
+
+.timeline-item.right .content::after {
+  left: -50px;
+}
+
+.step-title {
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #4CAF50;
+  margin-bottom: 8px;
+}
+
+  
+
+/* Message Section Styles */
+#message-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#message-input {
+  padding: 10px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  padding: 10px;
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #005f99;
+}
+
+#message-output {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+  </style>
+  <style>
     
-    <strong>Dr. {{ doctor.first_name }}{% if doctor.second_name %} {{ doctor.second_name }}{% endif %} {{ doctor.last_name }}</strong>
+
+      
+      .large-box h2 {
+        margin-bottom: 25px;
+        font-size: 28px;
+        font-weight: 600;
+        color: #000;
+      }
+      
+      .large-box input[type="email"],
+      .large-box input[type="text"],
+      .large-box input[type="date"],
+      .large-box input[type="radio"],
+      .large-box input[type="password"] {
+        width: 100%;
+        padding: 12px 15px;
+        margin: 10px 0;
+        border: 2.5px solid hsl(182, 100%, 35%);
+        border-radius: 8px;
+        background-color: #fff;
+        color: #000;
+        font-size: 15px;
+      }
+      
+      .large-box input::placeholder {
+        color: #000;
+        opacity: 1; /* Ensures full black */
+      }
+      
+      .large-box button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 15px;
+        background: hsl(182, 100%, 35%);
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #fff;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+      
+      .large-box button:hover {
+        background: hsl(186, 100%, 19%);;
+      }
+      .register-text {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+        align-items: center;
+      }
+      
+      .register-text a {
+        color:rgb(76, 139, 175);
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+      
+      .register-text a:hover {
+        color:rgb(56, 106, 142);
+        text-decoration: underline;
+      }
+      #previewImage {
+        max-width: 100%;
+        max-height: 200px;
+        display: none;
+        margin: 10px auto;
+        border-radius: 10px;
+      }
+      .large-box input[type="file"] {
+        margin: 10px 0;
+        width: 100%;
+        padding: 10px;
+        font-size: 15px;
+        border: 1px solid #000;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        cursor: pointer;
+      }
+      
+      .large-box select {
+        width: 100%;
+        padding: 12px 15px;
+        margin: 10px 0;
+        border: 1px solid #000;
+        border-radius: 8px;
+        background-color: #fff;
+        color: #000;
+        font-size: 15px;
+      }
+      
+      .large-box select:focus,
+      .large-box input[type="file"]:focus {
+        outline: none;
+        border-color: hsl(182, 100%, 35%);
+        box-shadow: 0 0 5px hsl(186, 100%, 19%);;
+      }
+      
+      
+      .family-members-wrapper {
+        text-align: left;
+        margin-top: 15px;
+      }
+      
+      .family-members-wrapper label {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 8px;
+        color: #333;
+      }
+      
+      .tag-options-inline {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+      }
+      
+      .tag {
+        background-color: #eee;
+        padding: 6px 12px;
+
+        border: 2.5px solid hsl(182, 100%, 35%);
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      
+      .tag.active {
+        background-color: #007bff;
+        color: white;
+      }
+      
+      
+      .tag.selected {
+        background:hsl(182, 100%, 35%);;
+        color: #fff;
+      }
+      
+      #customFamilyInput {
+        width: 100%;
+        padding: 12px 15px;
+        margin-top: 10px;
+        border: 2.5px solid hsl(182, 100%, 35%);
+        border-radius: 8px;
+        background-color: #fff;
+        color: #000;
+        font-size: 15px;
+      }
+      
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+      
+      .large-box select {
+        width: 100%;
+        padding: 12px 15px;
+        margin: 10px 0;
+        border: 2.5px solid hsl(182, 100%, 35%);
+        border-radius: 8px;
+        background-color: #fff;
+        color: #000;
+        font-size: 15px;
+      }
+      
+      .large-box select:focus {
+        outline: none;
+        border-color: hsl(182, 100%, 35%);
+        box-shadow: 0 0 5px hsl(186, 100%, 19%);
+      }
+
+      .form-grid.two-column {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        
+      }
+      .badge.open {
+        background-color: #2ecc71;
+        color: #fff;
+        padding: 7px 150px;
+        border-radius: 12px;
+        display: inline-block;
+        font-size: 12px;
+        margin-top: 5px;
+      }
+    
+      .badge.closed {
+        background: red;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 5px;
+        font-size: 12px;
+        margin-top: 5px;
+      }
+
+      .available-day {
+        background-color: #e0f7fa;
+        color: #00796b;
+        padding: 8px 12px;
+        margin: 5px;
+        border-radius: 8px;
+        font-weight: 500;
+        display: inline-block;
+      }
+      
+      .no-days {
+        color: #d32f2f;
+        font-style: italic;
+        padding: 10px;
+      }
+      
+</style>
+  
+<section class="section listing" aria-labelledby="listing-label">
+    <div class="container">
+  
+      <!-- Heading + Button -->
+      <div class="header-row">
+        <h2 class="headline-md" data-reveal="left">Dr. {{ doctors.first_name }}{% if doctors.second_name %} {{ doctor.second_name }}{% endif %} {{ doctors.last_name }}</h2>
+        <button class="medi-locker-btn"><a href="#appointment">Book the appointment</a></button>
+      </div>
+  
+      <div class="profile-layout">
+  
+        <!-- Left Sidebar -->
+        <div class="left-sidebar">
+  
+          <!-- Profile Card -->
+          <div class="profile-card">
+            
+            {% if doctors.photo %}
+            <img src="{{ doctors.photo.url }}" alt="Dr. {{ doctors.first_name }} {{ doctors.last_name }}" class="profile-pic">
+        {% else %}
+            <img src="{% static 'img/person/profile.png' %}" alt="Default Profile" class="profile-pic">
+        {% endif %}
+        
+
+    <h3 class="user-name">{{ request.user.first_name }} {{ request.user.userprofile.middle_name }} {{ request.user.last_name }}</h3>
+
+            <hr>
+            <p>Gender: {{ doctors.gender }}</p>
+            <p>Experience: {{ doctors.experience_years }} Years</p>
+            <p>Working Hospital: {{ doctors.hospital }}</p>
+            {% if doctors.is_available %}
+          <p class="badge open">Available</p>
+        {% else %}
+          <p class="badge closed">Not Available</p>
+        {% endif %}
+          </div>
+  
+          <!-- Available Days Card -->
+<div class="family-card">
+    <div class="family-card-header">
+      <h4 class="family-heading">Available Days</h4>
+    </div>
+    <div class="family-photos">
+      {% for day in doctors.available_days %}
+        <div class="available-day">{{ day }}</div>
+      {% empty %}
+        <p class="no-days">No available days listed.</p>
+      {% endfor %}
+    </div>
+  </div>
+  
+          
+        </div>
+  
+        <!-- Right Content -->
+        <div class="right-content">
+  
+          
+         
+            
+          
+
+            <div class="card large-box">
+             <h2>Qualification :</h2>
+                <p>{{ doctors.qualification|linebreaksbr|safe }}</p>
 
 
 
+          </div>
+          {% if doctors.about %}
+<div class="card large-box">
+  <h2>About</h2>
+  <p>{{ doctors.about|linebreaks }}</p>
+</div>
+{% endif %}
+  
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="hospital-gallery-section" id="appointment">
+    <div class="container">
+      <div class="card large-box">
+        <h2>APPOINTMENT</h2>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+      </div>
+    </div>
+  </section><br>
+  
+  <script>
+    //NAV BAR MOVING LINE ANIMATION
+    document.addEventListener("DOMContentLoaded", () => {
+        const tabs = document.querySelectorAll(".tab-link");
+        const line = document.querySelector(".broken-line");
+      
+        function updateLineCut(tab) {
+          const rect = tab.getBoundingClientRect(); // Get the dimensions of the clicked tab
+          const parentRect = line.getBoundingClientRect(); // Get the dimensions of the line's parent container
+          const left = rect.left - parentRect.left; // Left position of the clicked tab relative to the line
+          const right = parentRect.width - (rect.left + rect.width - parentRect.left); // Right position of the clicked tab
+      
+          // Set the custom CSS properties to control the width of the line
+          line.style.setProperty('--cut-left', `${left}px`);
+          line.style.setProperty('--cut-right', `${right}px`);
+          line.style.setProperty('clip-path', `inset(0 ${right}px 0 ${left}px)`); // Cut both sides of the line
+        }
+      
+        tabs.forEach(tab => {
+          tab.addEventListener("click", e => {
+            e.preventDefault();
+            tabs.forEach(t => t.classList.remove("active")); // Remove active class from all tabs
+            tab.classList.add("active"); // Add active class to the clicked tab
+            updateLineCut(tab); // Update the broken line to match the selected tab
+          });
+        });
+      
+        // Initialize the broken line position for the active tab on page load
+        const activeTab = document.querySelector(".tab-link.active");
+        if (activeTab) updateLineCut(activeTab);
+      });
+      
+      
+// SECTION ANIMATION
 
-</h1>
->>>>>>> 9e9b906 (doctor and hospital model change commit)
+      document.addEventListener("DOMContentLoaded", () => {
+        const tabs = document.querySelectorAll(".tab-link");
+        const tabContents = document.querySelectorAll(".tab-content");
+      
+        // Tab click event
+        tabs.forEach(tab => {
+          tab.addEventListener("click", (e) => {
+            tabs.forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
+      
+            const targetTab = tab.getAttribute("data-tab");
+            
+            tabContents.forEach(content => {
+              if (content.id === targetTab) {
+                content.classList.add("active");
+              } else {
+                content.classList.remove("active");
+              }
+            });
+          });
+        });
+      
+        // Message Form Submission
+        const messageForm = document.getElementById("message-form");
+        messageForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const messageInput = document.getElementById("message-input").value;
+          const messageOutput = document.getElementById("message-output");
+      
+          if (messageInput.trim() !== "") {
+            messageOutput.innerHTML = `<p><strong>Message Sent:</strong> ${messageInput}</p>`;
+            document.getElementById("message-input").value = ""; // Clear input
+          } else {
+            messageOutput.innerHTML = "<p>Please enter a message.</p>";
+          }
+        });
+      });
+      
+
+
+      /* Tag section of family members field */
+      const tags = document.querySelectorAll('.tag');
+      const customInput = document.getElementById('customFamilyInput');
+      const selectedValue = document.getElementById('selectedFamilyValue');
+      
+      // Attach input listener just once
+      customInput.addEventListener('input', () => {
+        selectedValue.value = customInput.value;
+      });
+      
+      tags.forEach(tag => {
+        tag.addEventListener('click', () => {
+          tags.forEach(t => t.classList.remove('selected'));
+          tag.classList.add('selected');
+      
+          const value = tag.getAttribute('data-value');
+          if (value === 'custom') {
+            customInput.style.display = 'block';
+            customInput.value = '';
+            selectedValue.value = '';
+            customInput.focus();
+          } else {
+            customInput.style.display = 'none';
+            selectedValue.value = value;
+          }
+        });
+      });
+      
+
+
+    // PHOTO Preview
+    let cropper;
+const fileInput = document.getElementById('profilePicInput');
+const preview = document.getElementById('preview');
+const form = document.querySelector('form'); // or document.getElementById('profileForm') if you have an id
+const hiddenInput = document.getElementById('croppedImageInput');
+
+fileInput.addEventListener('change', function (e) {
+  const file = e.target.files[0];
+  if (file && file.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      preview.src = event.target.result;
+      preview.style.display = 'block';
+      if (cropper) {
+        cropper.destroy();
+      }
+      cropper = new Cropper(preview, {
+        aspectRatio: 1,
+        viewMode: 1,
+        autoCropArea: 1,
+      });
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+form.addEventListener('submit', function (e) {
+  e.preventDefault();
+
+  if (cropper) {
+    // Get cropped image as base64 string (data URL)
+    const croppedDataUrl = cropper.getCroppedCanvas().toDataURL('image/png');
+    // Set the base64 string into hidden input so backend can receive it
+    hiddenInput.value = croppedDataUrl;
+
+    // Now submit the form normally
+    form.submit();
+  } else {
+    // No cropper initialized, submit normally without cropped image
+    form.submit();
+  }
+});
+
+  {% if profile_exists %}
+    document.getElementById("profileForm").style.display = "none";
+  {% endif %}
+
+
+    window.onload = () => populateStates('state');
+</script>
+  
+{% endblock body %}
+
+{% comment %} 
+<h1> <strong>Dr. {{ doctors.first_name }}{% if doctors.second_name %} {{ doctor.second_name }}{% endif %} {{ doctors.last_name }}</strong></h1> {% endcomment %}

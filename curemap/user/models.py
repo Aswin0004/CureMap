@@ -37,7 +37,7 @@ class UserProfile(models.Model):
     pincode = models.CharField(max_length=10)
 
     # Extra
-    family_member_count = models.PositiveIntegerField(default=0)
+    family_member_count = models.PositiveIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

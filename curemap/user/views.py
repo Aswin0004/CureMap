@@ -117,7 +117,55 @@ def user_profile(request):
 }
 
 
+
     return render(request, 'userpage/user_profile.html', context)
+
+@login_required
+def register_family_member(request):
+    user = request.user
+    try:
+        profile = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        messages.error(request, "User profile not found.")
+        return redirect('some_error_page_or_home')
+
+    current_count = FamilyMember.objects.filter(user=user).count()
+    can_add_more = current_count < profile.family_member_count
+
+    if request.method == 'POST':
+        if not can_add_more:
+            messages.error(request, "You have reached the maximum number of allowed family members.")
+            return redirect('register_family_member')
+
+        name = request.POST.get('name')
+        relationship = request.POST.get('relationship')
+        custom_relationship = request.POST.get('custom_relationship')
+        photo = request.FILES.get('photo')
+
+        # Use custom relationship if selected
+        final_relationship = relationship if relationship != 'Other' else custom_relationship
+
+        if not final_relationship:
+            messages.error(request, "Please specify the relationship.")
+            return redirect('register_family_member')
+
+        # Create new FamilyMember
+        FamilyMember.objects.create(
+            user=user,
+            name=name,
+            relationship=final_relationship,
+            photo=photo
+        )
+
+        messages.success(request, "Family member added successfully.")
+        return redirect('register_family_member')
+
+    context = {
+        'can_add_more': can_add_more,
+        'current_count': current_count,
+        'max_count': profile.family_member_count,
+    }
+    return render(request, 'userpage/user_profile.html',context)
 
 def add_family_member(request):
     if request.method == 'POST':
@@ -135,7 +183,7 @@ def add_family_member(request):
             custom_relationship=custom_relationship if relationship == 'Other' else '',
             photo=photo
         )
-        return redirect('suser_profile')
+        return redirect('user_profile')
 
     return render(request, 'userpage/add_family_member.html')
 

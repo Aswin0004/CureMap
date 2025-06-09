@@ -20,7 +20,8 @@ class Hospital(models.Model):
     place = models.CharField(max_length=100)
     district = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
-    location_map_url = models.URLField(blank=True, null=True)  # Google map location
+    location_map_url = models.URLField(max_length=2000, blank=True, null=True)
+ # Google map location
     rating = models.FloatField(default=0.0)
 
     open_24_hours = models.BooleanField(default=False, help_text="Check if the hospital is open 24 hours")
@@ -112,7 +113,7 @@ SPECIALIZATION_CHOICES = [
 
 class HospitalDetails(models.Model):
     hospital = models.OneToOneField('Hospital', on_delete=models.CASCADE, related_name='details')
-    about = models.TextField(help_text="General description about the hospital.",blank=True, null=True)
+    about = models.TextField(help_text="General description about the hospital.Use line breaks for paragraphs and * for bullet points.",blank=True, null=True)
     mission = models.TextField(blank=True, null=True)
     vision = models.TextField(blank=True, null=True)
     features = MultiSelectField(choices=FEATURE_CHOICES, blank=True)

@@ -718,53 +718,66 @@ button:hover {
             </form>
           </div>
           {% endif %}
+          <p>can_add_more = {{ can_add_more }}</p>
+<p>Current family members: {{ current_count }}</p>
+<p>Max allowed family members: {{ max_count }}</p>
+
 
           <div class="card large-box">
-            <h2>Register Family Members </h2>
-            <form id="profileForm" method="post" enctype="multipart/form-data">
+            <h2>Register Family Members</h2>
+            <form id="familyForm" method="post" enctype="multipart/form-data" action="{% url 'register_family_member' %}">
               {% csrf_token %}
-              {% for i in family_member_range %}
-                <div class="form-grid">
-                  <input type="text" name="name_{{ i }}" required placeholder="Name">
-                  <select name="relationship_{{ i }}" required>
-                    <option value="">--Select--</option>
-                    <option value="Father">Father</option>
-                    <option value="Mother">Mother</option>
-                    <option value="Brother">Brother</option>
-                    <option value="Sister">Sister</option>
-                    <option value="Spouse">Spouse</option>
-                    <option value="Son">Son</option>
-                    <option value="Daughter">Daughter</option>
-                    <option value="Grandfather">Grandfather</option>
-                    <option value="Grandmother">Grandmother</option>
-                    <option value="Other">Other</option>
-                  </select>
-                  <input type="text" name="custom_relationship_{{ i }}" placeholder="Specify relationship" style="display:none;">
-                  <input type="file" name="photo_{{ i }}" accept="image/png, image/jpeg, image/jpg" required>
-                </div>
-              {% endfor %}
+              {% if can_add_more %}
+              <div class="form-grid">
+                <input type="text" name="name" id="name" required placeholder="Name">
+        
+                <select name="relationship" id="relationship" required>
+                  <option value="">--Select--</option>
+                  <option value="Father">Father</option>
+                  <option value="Mother">Mother</option>
+                  <option value="Brother">Brother</option>
+                  <option value="Sister">Sister</option>
+                  <option value="Spouse">Spouse</option>
+                  <option value="Son">Son</option>
+                  <option value="Daughter">Daughter</option>
+                  <option value="Grandfather">Grandfather</option>
+                  <option value="Grandmother">Grandmother</option>
+                  <option value="Other">Other</option>
+                </select>
+        
+                <input type="text" name="custom_relationship" id="custom_relationship" placeholder="Specify relationship" style="display: none;">
+        
+                <input type="file" name="photo" accept="image/png, image/jpeg, image/jpg" required>
+              </div>
+        
+              {% else %}
+                <p>You have reached the maximum number of allowed family members.</p>
+                
+              {% endif %}
               <button type="submit">Save Profile</button>
             </form>
-            
-            <script>
-              document.querySelectorAll('select[name^="relationship_"]').forEach((selectElem) => {
-                selectElem.addEventListener('change', function() {
-                  const idx = this.name.split('_')[1];
-                  const customInput = document.querySelector(`input[name="custom_relationship_${idx}"]`);
-                  if (this.value === 'Other') {
-                    customInput.style.display = 'inline-block';
-                    customInput.required = true;
-                  } else {
-                    customInput.style.display = 'none';
-                    customInput.required = false;
-                    customInput.value = '';
-                  }
-                });
+          </div>
+        
+          <script>
+            document.addEventListener("DOMContentLoaded", function () {
+              const relationshipSelect = document.getElementById("relationship");
+              const customField = document.getElementById("custom_relationship");
+          
+              relationshipSelect.addEventListener("change", function () {
+                if (this.value === "Other") {
+                  customField.style.display = "block";
+                  customField.required = true;
+                } else {
+                  customField.style.display = "none";
+                  customField.required = false;
+                  customField.value = ""; // Clear value when hidden
+                }
               });
-            </script>
+            });
+          </script>
+          
             
           
-          </div>
 
             <div class="card large-box">
               <nav class="profile-nav">
