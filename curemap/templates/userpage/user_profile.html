@@ -718,16 +718,11 @@ button:hover {
             </form>
           </div>
           {% endif %}
-          <p>can_add_more = {{ can_add_more }}</p>
-<p>Current family members: {{ current_count }}</p>
-<p>Max allowed family members: {{ max_count }}</p>
-
 
           <div class="card large-box">
             <h2>Register Family Members</h2>
             <form id="familyForm" method="post" enctype="multipart/form-data" action="{% url 'register_family_member' %}">
               {% csrf_token %}
-              {% if can_add_more %}
               <div class="form-grid">
                 <input type="text" name="name" id="name" required placeholder="Name">
         
@@ -750,10 +745,6 @@ button:hover {
                 <input type="file" name="photo" accept="image/png, image/jpeg, image/jpg" required>
               </div>
         
-              {% else %}
-                <p>You have reached the maximum number of allowed family members.</p>
-                
-              {% endif %}
               <button type="submit">Save Profile</button>
             </form>
           </div>
