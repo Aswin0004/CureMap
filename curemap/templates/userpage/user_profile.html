@@ -258,131 +258,126 @@
       /* Tab Links */
 
 
-.tab-content {
-  display: none;
-  margin-top: 20px;
-}
+    .tab-content {
+      display: none;
+      margin-top: 20px;
+    }
 
-.tab-content.active {
-  display: block;
-}
+    .tab-content.active {
+      display: block;
+    }
 
-/* Timeline Styles */
-.timeline-zigzag {
-  position: relative;
-  max-width: 800px;
-  margin: 1px auto;
-  padding: 20px 0;
-}
+    /* Timeline Styles */
+    .timeline-zigzag {
+      position: relative;
+      max-width: 800px;
+      margin: 1px auto;
+      padding: 20px 0;
+    }
 
-.timeline-zigzag::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 0;
-  width: 4px;
-  height: 100%;
-  background-color: #ccc;
-  transform: translateX(-50%);
-  z-index: 1;
-}
+    .timeline-zigzag::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background-color: #ccc;
+      transform: translateX(-50%);
+      z-index: 1;
+    }
 
-.timeline-item {
-  padding: 20px 40px;
-  position: relative;
-  width: 50%;
-}
+    .timeline-item {
+      padding: 20px 40px;
+      position: relative;
+      width: 50%;
+    }
 
-.timeline-item.left {
-  left: 0;
-  text-align: right;
-}
+    .timeline-item.left {
+      left: 0;
+      text-align: right;
+    }
 
-.timeline-item.right {
-  left: 50%;
-  text-align: left;
-}
+    .timeline-item.right {
+      left: 50%;
+      text-align: left;
+    }
 
-.timeline-item .content {
-  background: linear-gradient(135deg, #f0f0f0, #e6e6e6);
-  padding: 15px 20px;
-  border-radius: 20px;
-  position: relative;
-  z-index: 2;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  display: inline-block;
-}
+    .timeline-item .content {
+      background: linear-gradient(135deg, #f0f0f0, #e6e6e6);
+      padding: 15px 20px;
+      border-radius: 20px;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: inline-block;
+    }
 
-.timeline-item.left .content::after,
-.timeline-item.right .content::after {
-  content: '';
-  position: absolute;
-  top: 20px;
-  width: 15px;
-  height: 15px;
-  background-color: #fff;
-  border: 4px solid #4CAF50;
-  border-radius: 50%;
-  z-index: 3;
-}
+    .timeline-item.left .content::after,
+    .timeline-item.right .content::after {
+      content: '';
+      position: absolute;
+      top: 20px;
+      width: 15px;
+      height: 15px;
+      background-color: #fff;
+      border: 4px solid #4CAF50;
+      border-radius: 50%;
+      z-index: 3;
+    }
 
-.timeline-item.left .content::after {
-  right: -50px;
-}
+    .timeline-item.left .content::after {
+      right: -50px;
+    }
 
-.timeline-item.right .content::after {
-  left: -50px;
-}
+    .timeline-item.right .content::after {
+      left: -50px;
+    }
 
-.step-title {
-  font-weight: bold;
-  font-size: 1.2em;
-  color: #4CAF50;
-  margin-bottom: 8px;
-}
-
-  
-
-/* Message Section Styles */
-#message-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-#message-input {
-  padding: 10px;
-  font-size: 1em;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-button {
-  padding: 10px;
-  background-color: #0077cc;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #005f99;
-}
-
-#message-output {
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #f9f9f9;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-  </style>
-  <style>
-    
+    .step-title {
+      font-weight: bold;
+      font-size: 1.2em;
+      color: #4CAF50;
+      margin-bottom: 8px;
+    }
 
       
+
+    /* Message Section Styles */
+    #message-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    #message-input {
+      padding: 10px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px;
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #005f99;
+    }
+
+    #message-output {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
       .large-box h2 {
         margin-bottom: 25px;
         font-size: 28px;
@@ -610,12 +605,9 @@ button:hover {
               <button class="add-btn"><a href="{% url 'add_family_member' %}">+ Add</a></button>
             </div>
             <div class="family-photos">
-              <img src="{% static 'img/person/t1.jpg' %}" class="family-pic" alt="Member 1">
-              <img src="{% static 'img/person/t3.jpg' %}" class="family-pic" alt="Member 2">
-              <img src="{% static 'img/person/team-3.jpg' %}" class="family-pic" alt="Member 3">
-              <img src="{% static 'img/person/team-2.jpg' %}" class="family-pic" alt="Member 4">
-              <img src="{% static 'img/person/a.jpg' %}" class="family-pic" alt="Member 5">
-              <img src="{% static 'img/person/t2.jpg' %}" class="family-pic" alt="Member 6">
+              {% for familymembers in familymembers %}
+              <img src="{{familymembers.photo.url}}" class="family-pic" alt="Member 1">
+              {% endfor %}
             </div>
           </div>
           
@@ -719,8 +711,8 @@ button:hover {
           </div>
           {% endif %}
 
-          <div class="card large-box">
-            <h2>Register Family Members</h2>
+      {% comment %}    <div class="card large-box">
+             <h2>Register Family Members</h2>
             <form id="familyForm" method="post" enctype="multipart/form-data" action="{% url 'register_family_member' %}">
               {% csrf_token %}
               <div class="form-grid">
@@ -746,7 +738,8 @@ button:hover {
               </div>
         
               <button type="submit">Save Profile</button>
-            </form>
+            </form> 
+            
           </div>
         
           <script>
@@ -767,7 +760,7 @@ button:hover {
             });
           </script>
           
-            
+            {% endcomment %}
           
 
             <div class="card large-box">

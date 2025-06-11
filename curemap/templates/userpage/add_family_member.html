@@ -1,95 +1,222 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Add Family Member</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 30px;
-        }
-        form {
-            max-width: 500px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-        }
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: bold;
-        }
-        input, select {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-        }
-        button {
-            margin-top: 20px;
-            padding: 10px 15px;
-            background-color: #28a745;
-            border: none;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        #custom-rel {
-            margin-top: 10px;
-        }
-    </style>
-</head>
-<body>
 
-    <h2>Add Family Member</h2>
+{% extends "basic_templates/header.html" %}
+{% load static %}
 
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
+{% block css %}
 
-        <label for="name">Name:</label>
-        <input type="text" name="name" id="name" required>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
-        <label for="relationship-select">Relationship:</label>
-        <select name="relationship" id="relationship-select" required>
-            <option value="">--Select--</option>
-            <option value="Father">Father</option>
-            <option value="Mother">Mother</option>
-            <option value="Brother">Brother</option>
-            <option value="Sister">Sister</option>
-            <option value="Spouse">Spouse</option>
-            <option value="Son">Son</option>
-            <option value="Daughter">Daughter</option>
-            <option value="Grandfather">Grandfather</option>
-            <option value="Grandmother">Grandmother</option>
-            <option value="Other">Other</option>
-        </select>
+<!-- Include Cropper.js CSS and JS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
-        <div id="custom-rel" style="display: none;">
-            <label for="custom_relationship">Specify Relationship:</label>
-            <input type="text" name="custom_relationship" id="custom_relationship" placeholder="Enter custom relationship">
-        </div>
+<link rel="stylesheet" href="{% static 'css/basic_css/header.css' %}">
+<link rel="stylesheet" href="{% static 'css/userpage/profile.css' %}">
 
-        <label for="photo">Photo:</label>
-        <input type="file" name="photo" id="photo">
+<script src="{% static 'js/basic/locationData.js' %}"></script>
+{% endblock css %}
 
-        <button type="submit">Add Family Member</button>
+{% block body %}<br>
+
+<style>
+    {% comment %} .large-box {
+      background: rgb(217, 237, 240);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 150, 136, 0.2);
+      max-width: 700px;
+      margin: 30px auto;
+      border: 2px solid hsl(182, 100%, 35%);
+    }
+  
+    .large-box h2 {
+      font-size: 26px;
+      font-weight: bold;
+      color: #000;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+  
+    .form-box {
+      border: 1.8px solid hsl(182, 100%, 35%);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      background-color: #fff;
+    }
+  
+    .large-box label {
+      font-weight: 600;
+      color: #333;
+      display: block;
+      margin-bottom: 8px;
+    }
+  
+    .large-box input,
+    .large-box select {
+      width: 100%;
+      padding: 12px;
+      font-size: 15px;
+      margin-top: 6px;
+      margin-bottom: 15px;
+      border: 2.5px solid hsl(182, 100%, 35%);
+      border-radius: 8px;
+      background-color: #fff;
+      color: #000;
+    }
+  
+    .large-box button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: hsl(182, 100%, 35%);
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+  
+    .large-box button:hover {
+      background: hsl(186, 100%, 19%);
+    }
+  
+    .large-box p {
+      text-align: center;
+      font-size: 16px;
+      color: #333;
+      margin-top: 20px;
+    } {% endcomment %}
+
+
+    .family-form-section {
+        background: linear-gradient(145deg, #e6f7f9, #f2fdfd);
+        border: 2px solid hsl(182, 100%, 35%);
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 100, 100, 0.1);
+        padding: 40px 30px;
+        max-width: 850px;
+        margin: 30px auto;
+      }
+      
+      .form-title {
+        text-align: center;
+        font-size: 28px;
+        font-weight: 700;
+        color: hsl(182, 100%, 25%);
+        margin-bottom: 30px;
+      }
+      
+      .family-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      .formset-container {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+      }
+      
+      .family-card-form {
+        background: #ffffff;
+        border-left: 6px solid hsl(182, 100%, 35%);
+        border-radius: 12px;
+        box-shadow: 0 2px 6px rgba(0, 100, 100, 0.1);
+        padding: 20px 25px;
+        transition: transform 0.2s ease;
+      }
+      
+      .family-card-form:hover {
+        transform: scale(1.01);
+      }
+      
+      .family-card-form label {
+        font-weight: 600;
+        color: #222;
+        margin-top: 10px;
+        display: block;
+      }
+      
+      .family-card-form input,
+      .family-card-form select {
+        width: 100%;
+        padding: 12px;
+        margin-top: 6px;
+        margin-bottom: 16px;
+        border: 2px solid hsl(182, 100%, 35%);
+        border-radius: 8px;
+        font-size: 15px;
+        background-color: #fefefe;
+        color: #000;
+        transition: border-color 0.3s ease;
+      }
+      
+      .family-card-form input:focus,
+      .family-card-form select:focus {
+        border-color: hsl(186, 100%, 25%);
+        outline: none;
+        box-shadow: 0 0 4px hsl(186, 100%, 25%);
+      }
+      
+      .submit-btn {
+        width: 100%;
+        padding: 14px;
+        background-color: hsl(182, 100%, 35%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 17px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      
+      .submit-btn:hover {
+        background-color: hsl(186, 100%, 25%);
+      }
+      
+      .limit-message {
+        text-align: center;
+        font-size: 16px;
+        color: #c0392b;
+        margin-top: 20px;
+      }
+      
+  </style>
+  <br>
+  <br>
+  <br>
+  <section class="family-form-section">
+    <h2 class="form-title">Add Family Members</h2>
+  
+    <form method="post" enctype="multipart/form-data" class="family-form">
+      {% csrf_token %}
+      {{ formset.management_form }}
+  
+      <div class="formset-container">
+        {% for form in formset %}
+          <div class="family-card-form">
+            {{ form.as_p }}
+          </div>
+        {% endfor %}
+      </div>
+  
+      {% if remaining > 0 %}
+        <button type="submit" class="submit-btn">Save Members</button>
+      {% else %}
+        <p class="limit-message">You've reached the maximum number of family members.</p>
+      {% endif %}
     </form>
+  </section>
+  
+  
+  
+  
+    
 
-    <script>
-        const relationshipSelect = document.getElementById("relationship-select");
-        const customRelDiv = document.getElementById("custom-rel");
-
-        function toggleCustomField() {
-            if (relationshipSelect.value === "Other") {
-                customRelDiv.style.display = "block";
-            } else {
-                customRelDiv.style.display = "none";
-            }
-        }
-
-        relationshipSelect.addEventListener("change", toggleCustomField);
-        window.onload = toggleCustomField;
-    </script>
-
-</body>
-</html>
+    {% endblock body %}
