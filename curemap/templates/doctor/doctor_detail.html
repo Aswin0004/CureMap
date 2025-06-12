@@ -909,7 +909,7 @@ button:hover {
     <div class="login-container" id="appointment">
       <h2>Appointment</h2><br>
       
-      <form method="post" action="appointment">
+      <form method="post" enctype="multipart/form-data">
         <h3>Patient Details</h3>
         {% csrf_token %}
       
@@ -933,8 +933,21 @@ button:hover {
         <h3>Doctor and Hospital</h3>
         
         <div class="form-grid two-column">
-          <input type="text" name="consulting_doctor" required placeholder="Consulting Doctor">
-          <input type="email" name="hospital" required placeholder="Hospital">
+          <select name="consulting_doctor" required>
+  <option value="">Select Doctor</option>
+  {% for d in doctors %}
+    <option value="{{ d.id }}" {% if doctor.id == d.id %}selected{% endif %}>Dr. {{ d.first_name }} {{ d.last_name }}</option>
+  {% endfor %}
+</select>
+
+          <select name="hospital" required>
+            <option value="">Select Hospital</option>
+            {% for h in hospitals %}
+              <option value="{{ h.id }}" {% if doctor.hospital.id == h.id %}selected{% endif %}>{{ h.hospital_name }}</option>
+            {% endfor %}
+          </select>
+          
+          
         </div>
 
       
@@ -964,7 +977,6 @@ button:hover {
       </form>
       
     </div>
-  </section>
   
 
   <!--DOCTOR CONSULTANT TIME -->
