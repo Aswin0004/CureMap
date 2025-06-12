@@ -24,39 +24,47 @@ def homepage(request):
 
 @login_required
 def user_profile(request):
-
     familymembers = FamilyMember.objects.all()
+
     # Prevent duplicate profile creation
     if hasattr(request.user, 'user_profile'):
         return redirect('edit_user_profile')
+
     profile_exists = hasattr(request.user, 'userprofile')
+    profile = request.user.userprofile if profile_exists else None
 
-    if profile_exists:
-        profile = request.user.userprofile
-    else:
-        profile = None
     if request.method == 'POST':
-        # Handle cropped image
-        cropped_data = request.POST.get('cropped_photo')
+        # === Handle Cropped Profile Image ===
+        cropped_photo_data = request.POST.get('cropped_photo')
         photo_file = None
-
-        if cropped_data:
+        if cropped_photo_data:
             try:
-                format, imgstr = cropped_data.split(';base64,')
+                format, imgstr = cropped_photo_data.split(';base64,')
                 ext = format.split('/')[-1].lower()
-                allowed_extensions = ['jpeg', 'jpg', 'png']
-                if ext not in allowed_extensions:
+                if ext not in ['jpeg', 'jpg', 'png']:
                     return HttpResponseBadRequest("Only JPEG, JPG, and PNG images are allowed.")
-                
-                # Optional: base64 size limit (~5MB)
                 if len(imgstr) > 7_000_000:
-                    return HttpResponseBadRequest("Image too large.")
-                
+                    return HttpResponseBadRequest("Profile image too large.")
                 photo_file = ContentFile(base64.b64decode(imgstr), name=f'cropped_photo.{ext}')
             except Exception:
-                return HttpResponseBadRequest("Invalid image data.")
+                return HttpResponseBadRequest("Invalid profile image data.")
 
-        # Extract and validate other fields
+        # === Handle Cropped Proof Document ===
+        cropped_proof_data = request.POST.get('cropped_proof')
+        proof_file = None
+        if cropped_proof_data:
+            try:
+                format, imgstr = cropped_proof_data.split(';base64,')
+                ext = format.split('/')[-1].lower()
+                if ext not in ['jpeg', 'jpg', 'png']:
+                    return HttpResponseBadRequest("Only JPEG, JPG, and PNG documents are allowed.")
+                if len(imgstr) > 7_000_000:
+                    return HttpResponseBadRequest("Proof document too large.")
+                proof_file = ContentFile(base64.b64decode(imgstr), name=f'cropped_proof.{ext}')
+            except Exception:
+                return HttpResponseBadRequest("Invalid proof document data.")
+
+        # === Extract and Validate Form Fields ===
         middle_name = request.POST.get('middle_name')
         blood_group = request.POST.get('blood_group')
         phone_number = request.POST.get('phone_number')
@@ -68,27 +76,29 @@ def user_profile(request):
         district = request.POST.get('district')
         state = request.POST.get('state')
         pincode = request.POST.get('pincode')
+        document_type = request.POST.get('Document Type')
+        document_number = request.POST.get('document_number')
 
-        # Parse and validate date of birth
+        # Date of Birth parsing
         try:
             dob = datetime.strptime(dob_raw, "%Y-%m-%d").date() if dob_raw else None
         except ValueError:
             return HttpResponseBadRequest("Invalid date format for DOB.")
 
-        # Validate phone number and pincode
+        # Phone number and pincode validation
         if phone_number and not phone_number.isdigit():
             return HttpResponseBadRequest("Phone number should contain only digits.")
         if pincode and not pincode.isdigit():
             return HttpResponseBadRequest("Pincode should contain only digits.")
 
-        # Validate and convert family member count
+        # Family Member Count
         try:
             family_member_count = int(request.POST.get('selected_family_members') or 0)
         except ValueError:
             family_member_count = 0
 
-        # Save user profile
-        profile = UserProfile(
+        # === Save UserProfile ===
+        profile = UserProfile.objects.create(
             user=request.user,
             middle_name=middle_name,
             blood_group=blood_group,
@@ -102,26 +112,26 @@ def user_profile(request):
             state=state,
             pincode=pincode,
             family_member_count=family_member_count,
-            photo=photo_file
+            document_type=document_type,
+            document_number=document_number,
+            photo=photo_file,
+            proof=proof_file
         )
-        profile.save()
 
-        return redirect('user_profile')  # Redirect to profile page or success view
-    
+        return redirect('user_profile')
+
+    # === If GET request ===
     age = None
     if profile and profile.dob:
         today = date.today()
         age = today.year - profile.dob.year - ((today.month, today.day) < (profile.dob.month, profile.dob.day))
 
-    
     context = {
         'age': age,
         'has_profile': hasattr(request.user, 'userprofile'),
-        'family_member_count': request.user.userprofile.family_member_count if hasattr(request.user, 'userprofile') else 0,
-        'familymembers':familymembers,
-}
-
-
+        'family_member_count': profile.family_member_count if profile else 0,
+        'familymembers': familymembers,
+    }
 
     return render(request, 'userpage/user_profile.html', context)
 

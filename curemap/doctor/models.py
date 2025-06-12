@@ -1,30 +1,10 @@
+from datetime import date
 from django.db import models
 from multiselectfield import MultiSelectField 
 from hospital.models import Hospital  # Import Hospital model if in another app
 
 
-TIME_SLOT_CHOICES = [
-    ('09:00 AM', '09:00 AM'),
-    ('09:30 AM', '09:30 AM'),
-    ('10:00 AM', '10:00 AM'),
-    ('10:30 AM', '10:30 AM'),
-    ('11:00 AM', '11:00 AM'),
-    ('11:30 AM', '11:30 AM'),
-    ('12:00 PM', '12:00 PM'),
-    ('12:30 PM', '12:30 PM'),
-    ('01:00 PM', '01:00 PM'),
-    ('01:30 PM', '01:30 PM'),
-    ('02:00 PM', '02:00 PM'),
-    ('02:30 PM', '02:30 PM'),
-    ('03:00 PM', '03:00 PM'),
-    ('03:30 PM', '03:30 PM'),
-    ('04:00 PM', '04:00 PM'),
-    ('04:30 PM', '04:30 PM'),
-    ('05:00 PM', '05:00 PM'),
-    ('05:30 PM', '05:30 PM'),
-    ('06:00 PM', '06:00 PM'),
-    ('06:30 PM', '06:30 PM'),
-]
+
 
 
 SPECIALIZATION_CHOICES = [
@@ -75,7 +55,28 @@ DAY_CHOICES = [
     ('saturday', 'Saturday'),
     ('sunday', 'Sunday'),
 ]
-
+TIME_SLOT_CHOICES = [
+    ('09:00 AM', '09:00 AM'),
+    ('09:30 AM', '09:30 AM'),
+    ('10:00 AM', '10:00 AM'),
+    ('10:30 AM', '10:30 AM'),
+    ('11:00 AM', '11:00 AM'),
+    ('11:30 AM', '11:30 AM'),
+    ('12:00 PM', '12:00 PM'),
+    ('12:30 PM', '12:30 PM'),
+    ('01:00 PM', '01:00 PM'),
+    ('01:30 PM', '01:30 PM'),
+    ('02:00 PM', '02:00 PM'),
+    ('02:30 PM', '02:30 PM'),
+    ('03:00 PM', '03:00 PM'),
+    ('03:30 PM', '03:30 PM'),
+    ('04:00 PM', '04:00 PM'),
+    ('04:30 PM', '04:30 PM'),
+    ('05:00 PM', '05:00 PM'),
+    ('05:30 PM', '05:30 PM'),
+    ('06:00 PM', '06:00 PM'),
+    ('06:30 PM', '06:30 PM'),
+]
 class Doctor(models.Model):
     first_name = models.CharField(max_length=100)
     second_name = models.CharField(max_length=100, blank=True, null=True)
@@ -143,3 +144,52 @@ class DoctorVideo(models.Model):
 
     def __str__(self):
         return f"Video by Dr. {self.doctor.first_name} {self.doctor.last_name}: {self.title}"
+
+
+
+
+
+class Appointment(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('confirmed', 'Confirmed'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+        ('missed', 'Missed'),
+    ]
+
+    # Patient Info
+    patient_full_name = models.CharField(max_length=100)
+    patient_email = models.EmailField()
+    patient_phone = models.CharField(max_length=15)
+    patient_age = models.PositiveIntegerField()
+    patient_gender = models.CharField(max_length=20)
+
+    # Location Info
+    patient_state = models.CharField(max_length=100)
+    patient_district = models.CharField(max_length=100)
+    patient_place = models.CharField(max_length=100)
+
+    # Foreign Keys (Doctor and Hospital)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='appointments')
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, related_name='appointments')
+
+    # Appointment Info
+    reason = models.TextField()
+    appointment_date = models.DateField()
+    appointment_time = models.CharField(max_length=20)
+
+    # Whether patient needs an assistant at hospital
+    assistant = models.CharField(max_length=3,choices=[('yes', 'Yes'), ('no', 'No')],default='no')
+    
+    # Status
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+
+    # Timestamp
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.full_name} - {self.appointment_date} at {self.appointment_time}"
+
+    def is_past(self):
+        return self.appointment_date < date.today()

@@ -1,0 +1,60 @@
+<form method="post">
+    {% csrf_token %}
+  
+    <label for="doctor">Select Doctor</label>
+    <select id="doctor" name="doctor">
+      <option value="">Select Doctor</option>
+      {% for doc in doctors %}
+        <option value="{{ doc.id }}">Dr. {{ doc.first_name }} {{ doc.last_name }}</option>
+      {% endfor %}
+    </select>
+  
+    <label for="day">Available Days</label>
+    <select id="day" name="appointment_day">
+      <option value="">Select Day</option>
+    </select>
+  
+    <label for="time">Available Time Slots</label>
+    <select id="time" name="time_slot">
+      <option value="">Select Time Slot</option>
+    </select>
+  
+    <button type="submit">Book Appointment</button>
+  </form>
+  
+  <script>
+  document.getElementById('doctor').addEventListener('change', function () {
+      const doctorId = this.value;
+      if (!doctorId) return;
+  
+      fetch(`/get_doctor_availability/${doctorId}/`)
+          .then(res => res.json())
+          .then(data => {
+              if (data.error) {
+                  alert(data.error);
+                  return;
+              }
+  
+              const daySelect = document.getElementById('day');
+              daySelect.innerHTML = '<option value="">Select Day</option>';
+              data.days.forEach(day => {
+                  const label = day.charAt(0).toUpperCase() + day.slice(1);
+                  daySelect.innerHTML += `<option value="${day}">${label}</option>`;
+              });
+  
+              const timeSelect = document.getElementById('time');
+              timeSelect.innerHTML = '<option value="">Select Time Slot</option>';
+  
+              daySelect.onchange = function () {
+                  const selectedDay = this.value;
+                  timeSelect.innerHTML = '<option value="">Select Time Slot</option>';
+                  if (data.slots[selectedDay]) {
+                      data.slots[selectedDay].forEach(slot => {
+                          timeSelect.innerHTML += `<option value="${slot}">${slot}</option>`;
+                      });
+                  }
+              };
+          });
+  });
+  </script>
+  

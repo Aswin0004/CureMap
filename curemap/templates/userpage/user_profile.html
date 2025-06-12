@@ -604,11 +604,15 @@
               <h4 class="family-heading">Family Members</h4>
               <button class="add-btn"><a href="{% url 'add_family_member' %}">+ Add</a></button>
             </div>
+            {% if family_member_count > 0 %}
             <div class="family-photos">
               {% for familymembers in familymembers %}
               <img src="{{familymembers.photo.url}}" class="family-pic" alt="Member 1">
               {% endfor %}
             </div>
+            {% else %}
+            <p>No members</p>
+            {% endif %}
           </div>
           
         </div>
@@ -627,20 +631,18 @@
             <h2>Register User Details</h2>
             <form id="profileForm" method="post" enctype="multipart/form-data">
               {% csrf_token %}
-              
-              {% comment %} <div class="form-grid two-column">
-                <input type="email" name="email" required placeholder="Email" >
-                <input type="password" name="password" required placeholder="Password">
-              </div> {% endcomment %}
-              
-              <div class="form-grid">
-                <input type="text" name="first_name" required placeholder="First Name" value="{{ request.user.first_name }} "> 
-                <input type="text" name="middle_name" placeholder="Middle_name">
-                <input type="text" name="last_name" placeholder="Last Name" value="{{ request.user.last_name }}">
-                <input type="email" name="email" required placeholder="Email" value="{{ request.user.email }}">
-                <input type="date" name="dob" required placeholder="Date of Birth" >
-                <input type="text" name="phone_number" required placeholder="Phone Number">
             
+              <!-- === Personal Information === -->
+              <div class="form-grid">
+                <input type="text" name="first_name" required placeholder="First Name" value="{{ request.user.first_name }}">
+                <input type="text" name="middle_name" placeholder="Middle Name">
+                <input type="text" name="last_name" placeholder="Last Name" value="{{ request.user.last_name }}">
+                <input type="date" name="dob" required placeholder="Date of Birth">
+                <select name="gender" required>
+                  <option value="">Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
                 <select name="blood_group">
                   <option value="">Select Blood Group</option>
                   <option value="A+">A+</option>
@@ -652,32 +654,56 @@
                   <option value="AB+">AB+</option>
                   <option value="AB-">AB-</option>
                 </select>
-                <select name="gender" required>
-                  <option value="">Select Gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                </select>
-            
-                <input type="text" name="pincode" required placeholder="Pincode">
-                <!-- State Dropdown -->
-    <select id="state" name="state" class="form-control" required onchange="populateDistricts('state', 'district')">
-      <option value="">Select State</option>
-    </select>
-    
-    
-    <!-- District Dropdown -->
-    <select id="district" name="district" class="form-control" required>
-      <option value="">Select District</option>
-    </select>
-    
-                <input type="text" name="place" required placeholder="Place">
-                <input type="text" name="street" required placeholder="street">
-                <input type="text" name="house_name" required placeholder="House Name">
-                <input type="file" id="profilePicInput" accept="image/png, image/jpeg, image/jpg" required>
-
-                
               </div>
-              <!-- Family Members Section -->
+            
+              <!-- === Contact Information === -->
+              <div class="form-grid">
+                <input type="email" name="email" required placeholder="Email" value="{{ request.user.email }}">
+                <input type="text" name="phone_number" required placeholder="Phone Number">
+              </div>
+            
+              <!-- === Address Information === -->
+              <div class="form-grid">
+                <input type="text" name="pincode" required placeholder="Pincode">
+                <select id="state" name="state" class="form-control" required onchange="populateDistricts('state', 'district')">
+                  <option value="">Select State</option>
+                </select>
+                <select id="district" name="district" class="form-control" required>
+                  <option value="">Select District</option>
+                </select>
+                <input type="text" name="place" required placeholder="Place">
+                <input type="text" name="street" required placeholder="Street">
+                <input type="text" name="house_name" required placeholder="House Name">
+              </div>
+            
+              <!-- === Identity Proof === -->
+              <div class="form-grid">
+                <select name="Document Type" required>
+                  <option value="">Select Document Type</option>
+                  <option value="Aadhar">Aadhar</option>
+                  <option value="Passport">Passport</option>
+                </select>
+                <input type="text" name="document_number" required placeholder="Document Number">
+              </div>
+            
+              <!-- === Uploads === -->
+              <div class="form-grid">
+                <label for="profilePicInput">Upload Profile Photo</label>
+                <input type="file" id="profilePicInput" accept="image/png, image/jpeg, image/jpg" required>
+                <div id="cropper-container-photo" style="margin-top: 10px;">
+                  <img id="previewPhoto" style="max-width: 300px; display: none;" />
+                  <input type="hidden" id="croppedImageInputPhoto" name="cropped_photo" />
+                </div>
+            
+                <label for="proofPicInput">Upload ID Proof (Aadhaar, Passport, etc.)</label>
+                <input type="file" id="proofPicInput" accept="image/png, image/jpeg" required>
+                <div id="cropper-container-proof" style="margin-top: 10px;">
+                  <img id="previewProof" style="max-width: 300px; display: none;" />
+                  <input type="hidden" id="croppedImageInputProof" name="cropped_proof" />
+                </div>
+              </div>
+            
+              <!-- === Family Member Selection === -->
               <div class="family-members-wrapper">
                 <label>Select Family Members</label>
                 <div class="tag-options-inline">
@@ -687,81 +713,21 @@
                   <span class="tag" data-value="4">4</span>
                   <span class="tag" data-value="5">5</span>
                   <span class="tag custom-tag" data-value="custom">Custom</span>
-                  
-                  <!-- Custom input shown inline -->
+            
+                  <!-- Custom input -->
                   <input type="number" name="family_member_count" id="customFamilyInput" min="1" placeholder="Enter custom number" style="display: none; width: 33%; margin-left: 10px 0;" />
                   <input type="hidden" name="selected_family_members" id="selectedFamilyValue">
                 </div>
-                
-
-                <div class="form-grid">
-                  <label for="photo">Upload Photo</label>
-                  <!-- Preview and Crop Area -->
-                  <div id="cropper-container" style="margin-top: 10px;">
-                    <img id="preview" style="max-width: 300px; display:none;">
-                    <canvas id="croppedCanvas" style="display: none;"></canvas>
-                      <input type="hidden" name="cropped_photo" id="croppedImageInput">
-                      <button type="submit">Save Profile</button>
-                    
-                  </div>
+              </div>
             
-                </div>
+              <!-- === Submit Button === -->
+              <div class="form-grid">
+                <button type="submit">Save Profile</button>
               </div>
             </form>
-          </div>
-          {% endif %}
-
-      {% comment %}    <div class="card large-box">
-             <h2>Register Family Members</h2>
-            <form id="familyForm" method="post" enctype="multipart/form-data" action="{% url 'register_family_member' %}">
-              {% csrf_token %}
-              <div class="form-grid">
-                <input type="text" name="name" id="name" required placeholder="Name">
-        
-                <select name="relationship" id="relationship" required>
-                  <option value="">--Select--</option>
-                  <option value="Father">Father</option>
-                  <option value="Mother">Mother</option>
-                  <option value="Brother">Brother</option>
-                  <option value="Sister">Sister</option>
-                  <option value="Spouse">Spouse</option>
-                  <option value="Son">Son</option>
-                  <option value="Daughter">Daughter</option>
-                  <option value="Grandfather">Grandfather</option>
-                  <option value="Grandmother">Grandmother</option>
-                  <option value="Other">Other</option>
-                </select>
-        
-                <input type="text" name="custom_relationship" id="custom_relationship" placeholder="Specify relationship" style="display: none;">
-        
-                <input type="file" name="photo" accept="image/png, image/jpeg, image/jpg" required>
-              </div>
-        
-              <button type="submit">Save Profile</button>
-            </form> 
             
           </div>
-        
-          <script>
-            document.addEventListener("DOMContentLoaded", function () {
-              const relationshipSelect = document.getElementById("relationship");
-              const customField = document.getElementById("custom_relationship");
-          
-              relationshipSelect.addEventListener("change", function () {
-                if (this.value === "Other") {
-                  customField.style.display = "block";
-                  customField.required = true;
-                } else {
-                  customField.style.display = "none";
-                  customField.required = false;
-                  customField.value = ""; // Clear value when hidden
-                }
-              });
-            });
-          </script>
-          
-            {% endcomment %}
-          
+          {% endif %}
 
             <div class="card large-box">
               <nav class="profile-nav">
@@ -840,160 +806,168 @@
   
   
   <script>
-    //NAV BAR MOVING LINE ANIMATION
     document.addEventListener("DOMContentLoaded", () => {
-        const tabs = document.querySelectorAll(".tab-link");
-        const line = document.querySelector(".broken-line");
-      
-        function updateLineCut(tab) {
-          const rect = tab.getBoundingClientRect(); // Get the dimensions of the clicked tab
-          const parentRect = line.getBoundingClientRect(); // Get the dimensions of the line's parent container
-          const left = rect.left - parentRect.left; // Left position of the clicked tab relative to the line
-          const right = parentRect.width - (rect.left + rect.width - parentRect.left); // Right position of the clicked tab
-      
-          // Set the custom CSS properties to control the width of the line
-          line.style.setProperty('--cut-left', `${left}px`);
-          line.style.setProperty('--cut-right', `${right}px`);
-          line.style.setProperty('clip-path', `inset(0 ${right}px 0 ${left}px)`); // Cut both sides of the line
-        }
-      
-        tabs.forEach(tab => {
-          tab.addEventListener("click", e => {
-            e.preventDefault();
-            tabs.forEach(t => t.classList.remove("active")); // Remove active class from all tabs
-            tab.classList.add("active"); // Add active class to the clicked tab
-            updateLineCut(tab); // Update the broken line to match the selected tab
-          });
+      // === NAV BAR MOVING LINE ANIMATION ===
+      const tabs = document.querySelectorAll(".tab-link");
+      const line = document.querySelector(".broken-line");
+  
+      function updateLineCut(tab) {
+        const rect = tab.getBoundingClientRect();
+        const parentRect = line.getBoundingClientRect();
+        const left = rect.left - parentRect.left;
+        const right = parentRect.width - (rect.left + rect.width - parentRect.left);
+        line.style.setProperty('--cut-left', `${left}px`);
+        line.style.setProperty('--cut-right', `${right}px`);
+        line.style.setProperty('clip-path', `inset(0 ${right}px 0 ${left}px)`);
+      }
+  
+      tabs.forEach(tab => {
+        tab.addEventListener("click", e => {
+          e.preventDefault();
+          tabs.forEach(t => t.classList.remove("active"));
+          tab.classList.add("active");
+          updateLineCut(tab);
         });
-      
-        // Initialize the broken line position for the active tab on page load
-        const activeTab = document.querySelector(".tab-link.active");
-        if (activeTab) updateLineCut(activeTab);
       });
-      
-      
-// SECTION ANIMATION
-
-      document.addEventListener("DOMContentLoaded", () => {
-        const tabs = document.querySelectorAll(".tab-link");
-        const tabContents = document.querySelectorAll(".tab-content");
-      
-        // Tab click event
-        tabs.forEach(tab => {
-          tab.addEventListener("click", (e) => {
-            tabs.forEach(t => t.classList.remove("active"));
-            tab.classList.add("active");
-      
-            const targetTab = tab.getAttribute("data-tab");
-            
-            tabContents.forEach(content => {
-              if (content.id === targetTab) {
-                content.classList.add("active");
-              } else {
-                content.classList.remove("active");
-              }
-            });
+  
+      const activeTab = document.querySelector(".tab-link.active");
+      if (activeTab) updateLineCut(activeTab);
+  
+      // === SECTION TAB CONTENT SWITCH ===
+      const tabContents = document.querySelectorAll(".tab-content");
+      tabs.forEach(tab => {
+        tab.addEventListener("click", (e) => {
+          const targetTab = tab.getAttribute("data-tab");
+          tabContents.forEach(content => {
+            content.classList.toggle("active", content.id === targetTab);
           });
         });
-      
-        // Message Form Submission
-        const messageForm = document.getElementById("message-form");
+      });
+  
+      // === MESSAGE FORM HANDLING ===
+      const messageForm = document.getElementById("message-form");
+      if (messageForm) {
         messageForm.addEventListener("submit", (e) => {
           e.preventDefault();
           const messageInput = document.getElementById("message-input").value;
           const messageOutput = document.getElementById("message-output");
-      
           if (messageInput.trim() !== "") {
             messageOutput.innerHTML = `<p><strong>Message Sent:</strong> ${messageInput}</p>`;
-            document.getElementById("message-input").value = ""; // Clear input
+            document.getElementById("message-input").value = "";
           } else {
             messageOutput.innerHTML = "<p>Please enter a message.</p>";
           }
         });
-      });
-      
-
-
-      /* Tag section of family members field */
+      }
+  
+      // === FAMILY TAG INPUT ===
       const tags = document.querySelectorAll('.tag');
       const customInput = document.getElementById('customFamilyInput');
       const selectedValue = document.getElementById('selectedFamilyValue');
-      
-      // Attach input listener just once
-      customInput.addEventListener('input', () => {
-        selectedValue.value = customInput.value;
-      });
-      
-      tags.forEach(tag => {
-        tag.addEventListener('click', () => {
-          tags.forEach(t => t.classList.remove('selected'));
-          tag.classList.add('selected');
-      
-          const value = tag.getAttribute('data-value');
-          if (value === 'custom') {
-            customInput.style.display = 'block';
-            customInput.value = '';
-            selectedValue.value = '';
-            customInput.focus();
-          } else {
-            customInput.style.display = 'none';
-            selectedValue.value = value;
-          }
+  
+      if (customInput && selectedValue) {
+        customInput.addEventListener('input', () => {
+          selectedValue.value = customInput.value;
         });
-      });
-      
-
-
-    // PHOTO Preview
-    let cropper;
-const fileInput = document.getElementById('profilePicInput');
-const preview = document.getElementById('preview');
-const form = document.querySelector('form'); // or document.getElementById('profileForm') if you have an id
-const hiddenInput = document.getElementById('croppedImageInput');
-
-fileInput.addEventListener('change', function (e) {
-  const file = e.target.files[0];
-  if (file && file.type.startsWith('image/')) {
-    const reader = new FileReader();
-    reader.onload = function (event) {
-      preview.src = event.target.result;
-      preview.style.display = 'block';
-      if (cropper) {
-        cropper.destroy();
+  
+        tags.forEach(tag => {
+          tag.addEventListener('click', () => {
+            tags.forEach(t => t.classList.remove('selected'));
+            tag.classList.add('selected');
+            const value = tag.getAttribute('data-value');
+            if (value === 'custom') {
+              customInput.style.display = 'block';
+              customInput.value = '';
+              selectedValue.value = '';
+              customInput.focus();
+            } else {
+              customInput.style.display = 'none';
+              selectedValue.value = value;
+            }
+          });
+        });
       }
-      cropper = new Cropper(preview, {
-        aspectRatio: 1,
-        viewMode: 1,
-        autoCropArea: 1,
-      });
+  
+     // === IMAGE CROPPER SETUP ===
+  const form = document.querySelector('form');
+  let cropperPhoto = null;
+  let cropperProof = null;
+
+  // Generic cropper setup function
+  function setupCropper(fileInputId, previewId, hiddenInputId, cropperRef, aspectRatio = 1) {
+    const fileInput = document.getElementById(fileInputId);
+    const preview = document.getElementById(previewId);
+    const hiddenInput = document.getElementById(hiddenInputId);
+
+    fileInput.addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          preview.src = event.target.result;
+          preview.style.display = 'block';
+
+          if (cropperRef.cropper) cropperRef.cropper.destroy();
+
+          cropperRef.cropper = new Cropper(preview, {
+            aspectRatio: aspectRatio,
+            viewMode: 1,
+            autoCropArea: 1,
+          });
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    return {
+      getCroppedData: () => {
+        if (cropperRef.cropper) {
+          hiddenInput.value = cropperRef.cropper.getCroppedCanvas().toDataURL('image/png');
+        }
+      }
     };
-    reader.readAsDataURL(file);
   }
-});
 
-form.addEventListener('submit', function (e) {
-  e.preventDefault();
+  // Initialize croppers with different aspect ratios
+  const photoHandler = setupCropper(
+    'profilePicInput',           // File input ID for profile photo
+    'previewPhoto',              // Preview image ID
+    'croppedImageInputPhoto',    // Hidden input to store cropped base64
+    { cropper: cropperPhoto },
+    1                             // Square aspect ratio
+  );
 
-  if (cropper) {
-    // Get cropped image as base64 string (data URL)
-    const croppedDataUrl = cropper.getCroppedCanvas().toDataURL('image/png');
-    // Set the base64 string into hidden input so backend can receive it
-    hiddenInput.value = croppedDataUrl;
+  const proofHandler = setupCropper(
+    'proofPicInput',             // File input ID for proof document
+    'previewProof',              // Preview image ID
+    'croppedImageInputProof',    // Hidden input to store cropped base64
+    { cropper: cropperProof },
+    1.6                           // Rectangular aspect ratio (e.g., PAN/Aadhaar)
+  );
 
-    // Now submit the form normally
-    form.submit();
-  } else {
-    // No cropper initialized, submit normally without cropped image
-    form.submit();
+  // === FORM SUBMISSION WITH CROPPED DATA ===
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      // Store cropped image data before submit
+      photoHandler.getCroppedData();
+      proofHandler.getCroppedData();
+
+      // Now submit the form
+      form.submit();
+    });
   }
-});
-
-  {% if profile_exists %}
-    document.getElementById("profileForm").style.display = "none";
-  {% endif %}
-
-
-    window.onload = () => populateStates('state');
-</script>
+  
+      // === OPTIONAL: Hide form if profile exists ===
+      {% if profile_exists %}
+        document.getElementById("profileForm").style.display = "none";
+      {% endif %}
+  
+      // === OPTIONAL: Initial State Population ===
+      window.onload = () => populateStates('state');
+    });
+  </script>
+  
   
 {% endblock body %}
