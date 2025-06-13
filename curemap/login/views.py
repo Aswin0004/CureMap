@@ -16,27 +16,25 @@ from django.conf import settings  # Ensure you have EMAIL settings in settings.p
 
 def login_user(request):
     if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST.get('username')
+        password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
-            login(request,user)
-            messages.success(request,("loggin in successfully"))
-            return redirect('homepage')
+            login(request, user)
+            messages.success(request, "Logged in successfully.")
+            
+            # Check if the user is a superuser
+            if user.is_superuser:
+                return redirect('/super_admin/')  # or use reverse('admin:index') if preferred
+            
+            return redirect('homepage')  # normal user redirect
         else:
-            messages.success(request,("There was an error in loggin In , Try Again.."))
+            messages.error(request, "Invalid username or password. Please try again.")
             return redirect('login_user')
-    else:
-       return render(request, 'loginpage/login.html') 
-        
-
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.contrib import messages
-from django.core.mail import send_mail
-from django.conf import settings
-from .forms import RegisterUserForm
+    
+    return render(request, 'loginpage/login.html')
+    
 
 def register_user(request):
     if request.method == "POST":

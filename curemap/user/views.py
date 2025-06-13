@@ -223,3 +223,12 @@ def edit_user_profile(request):
 
     return render(request, 'userpage/edit_profile.html')
 
+
+
+
+# ADMIN DASH BOARD 
+
+
+def super_admin(request):
+    return render(request, 'admin/super_admin.html')
+
